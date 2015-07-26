@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="e108a080-21cf-46ab-85bf-4772ff1f4fd7" name="pdaniels@RDL-2CE3201323 2015-07-23 10:54:02" runUser="CORP\pdaniels" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Default Test Settings" id="06e63395-5030-4ed8-acaa-79d22acb1a62">
+    <Deployment userDeploymentRoot="c:\work\bitbucket\Quest.Dataweb\Quest.Dataweb.Tests\bin\Debug" useDefaultDeploymentRoot="false" runDeploymentRoot="pdaniels_RDL-2CE3201323 2015-07-23 10_54_02" />
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+    <Properties />
+  </TestSettings>
+  <Times creation="2015-07-23T10:54:02.3475700+01:00" queuing="2015-07-23T10:54:02.9026255+01:00" start="2015-07-23T10:54:02.9926345+01:00" finish="2015-07-23T10:54:03.4206773+01:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Ctor_WhenPostcodeIsNull_PassingTest" storage="quest.dataweb.tests.dll" id="f1ab7545-7e00-791b-abec-55e0e1640206">
+      <Execution id="2def6585-e557-4251-bccc-001c4dde62f7" />
+      <TestMethod codeBase="c:/work/bitbucket/Quest.Dataweb/Quest.Dataweb.Tests/bin/Debug/Quest.Dataweb.Tests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="Quest.Dataweb.Tests.PostcodeTests, Quest.Dataweb.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Ctor_WhenPostcodeIsNull_PassingTest" />
+    </UnitTest>
+    <UnitTest name="Ctor_WhenPostcodeIsNull_FailingTest" storage="quest.dataweb.tests.dll" id="98508a35-dbee-f1cf-c460-0af666bbe1f1">
+      <Execution id="37136a40-3172-4d46-8b40-c204ce1f83f4" />
+      <TestMethod codeBase="c:/work/bitbucket/Quest.Dataweb/Quest.Dataweb.Tests/bin/Debug/Quest.Dataweb.Tests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="Quest.Dataweb.Tests.PostcodeTests, Quest.Dataweb.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Ctor_WhenPostcodeIsNull_FailingTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="98508a35-dbee-f1cf-c460-0af666bbe1f1" executionId="37136a40-3172-4d46-8b40-c204ce1f83f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f1ab7545-7e00-791b-abec-55e0e1640206" executionId="2def6585-e557-4251-bccc-001c4dde62f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="37136a40-3172-4d46-8b40-c204ce1f83f4" testId="98508a35-dbee-f1cf-c460-0af666bbe1f1" testName="Ctor_WhenPostcodeIsNull_FailingTest" computerName="RDL-2CE3201323" duration="00:00:00.0884583" startTime="2015-07-23T10:54:03.0236376+01:00" endTime="2015-07-23T10:54:03.3506703+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="37136a40-3172-4d46-8b40-c204ce1f83f4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.AreEqual failed. Expected:&lt;20&gt;. Actual:&lt;30&gt;. </Message>
+          <StackTrace>   at Quest.Dataweb.Tests.PostcodeTests.Ctor_WhenPostcodeIsNull_FailingTest() in c:\work\bitbucket\Quest.Dataweb\Quest.Dataweb.Tests\UnitTest1.cs:line 14
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2def6585-e557-4251-bccc-001c4dde62f7" testId="f1ab7545-7e00-791b-abec-55e0e1640206" testName="Ctor_WhenPostcodeIsNull_PassingTest" computerName="RDL-2CE3201323" duration="00:00:00.0008776" startTime="2015-07-23T10:54:03.3576710+01:00" endTime="2015-07-23T10:54:03.3606713+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2def6585-e557-4251-bccc-001c4dde62f7">
+    </UnitTestResult>
+  </Results>
+</TestRun>

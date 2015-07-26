@@ -1,0 +1,9 @@
+# Turn off line ending normalization
+* -text
+
+# Stop diff from reporting a CR as a whitespace error.
+* whitespace=cr-at-eol
+
+# Enhanced diff header.
+*.cs diff=csharp
+

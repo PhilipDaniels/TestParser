@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestParser", "TestParser\TestParser.csproj", "{A73A5589-50FE-4243-A51B-FE2902D58C69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestParser.Core", "TestParser.Core\TestParser.Core.csproj", "{73426E82-1556-4896-A7EA-7BDA7FEF8D4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A73A5589-50FE-4243-A51B-FE2902D58C69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73A5589-50FE-4243-A51B-FE2902D58C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73A5589-50FE-4243-A51B-FE2902D58C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73A5589-50FE-4243-A51B-FE2902D58C69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73426E82-1556-4896-A7EA-7BDA7FEF8D4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73426E82-1556-4896-A7EA-7BDA7FEF8D4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73426E82-1556-4896-A7EA-7BDA7FEF8D4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73426E82-1556-4896-A7EA-7BDA7FEF8D4E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
