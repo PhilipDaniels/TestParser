@@ -2,8 +2,9 @@
 
 namespace TestParser.Core.XL
 {
-    public class FluentStyle
+    public class FluentStyleDTO
     {
+        // Main cell style settings.
         public HorizontalAlignment? Alignment { get; set; }
         public BorderStyle? BorderBottom { get; set; }
         public BorderDiagonal? BorderDiagonal { get; set; }
@@ -25,8 +26,20 @@ namespace TestParser.Core.XL
         public short? TopBorderColor { get; set; }
         public VerticalAlignment? VerticalAlignment { get; set; }
         public bool? WrapText { get; set; }
+        
+        // Font settings.
+        public FontBoldWeight? FontWeight { get; set; }
+        public short? Charset { get; set; }
+        public short? Color { get; set; }
+        public double? FontHeight { get; set; }
+        public short? FontHeightInPoints { get; set; }
+        public string FontName { get; set; }
+        public bool? Italic { get; set; }
+        public bool? Strikeout { get; set; }
+        public FontSuperScript? SuperScript { get; set; }
+        public FontUnderlineType? Underline { get; set; }
 
-        public void ApplyStyle(ICellStyle destination)
+        public void ApplyStyle(IWorkbook workbook, ICellStyle destination)
         {
             if (Alignment != null) destination.Alignment = Alignment.Value;
             if (BorderBottom != null) destination.BorderBottom = BorderBottom.Value;
@@ -49,6 +62,28 @@ namespace TestParser.Core.XL
             if (TopBorderColor != null) destination.TopBorderColor = TopBorderColor.Value;
             if (VerticalAlignment != null) destination.VerticalAlignment = VerticalAlignment.Value;
             if (WrapText != null) destination.WrapText = WrapText.Value;
+
+            if (FontIsNeeded)
+            {
+                var font = workbook.CreateFont();
+
+                if (FontWeight != null) font.Boldweight = (short)FontWeight.Value;
+                if (Charset != null) font.Charset = Charset.Value;
+                if (Color != null) font.Color = Color.Value;
+                if (FontHeight != null) font.FontHeight = FontHeight.Value;
+                if (FontHeightInPoints != null) font.FontHeightInPoints = FontHeightInPoints.Value;
+                if (FontName != null) font.FontName = FontName;
+                if (Italic != null) font.IsItalic = Italic.Value;
+                if (Strikeout != null) font.IsStrikeout = Strikeout.Value;
+                if (SuperScript != null) font.TypeOffset = SuperScript.Value;
+                if (Underline != null) font.Underline = Underline.Value;
+
+                destination.SetFont(font);
+            }
+
+            //dateStyle = workbook.CreateCellStyle();
+            //IDataFormat dataFormat = workbook.CreateDataFormat();
+            //dateStyle.DataFormat = dataFormat.GetFormat("yyyy-MM-dd HH:mm:ss");
         }
 
         /// <summary>
@@ -87,6 +122,18 @@ namespace TestParser.Core.XL
                 if (TopBorderColor != null) hash += 23 * TopBorderColor.Value.GetHashCode();
                 if (VerticalAlignment != null) hash += 23 * VerticalAlignment.Value.GetHashCode();
                 if (WrapText != null) hash += 23 * WrapText.Value.GetHashCode();
+
+                if (FontWeight != null) hash += 23 * FontWeight.Value.GetHashCode();
+                if (Charset != null) hash += 23 * Charset.Value.GetHashCode();
+                if (Color != null) hash += 23 * Color.Value.GetHashCode();
+                if (FontHeight != null) hash += 23 * FontHeight.Value.GetHashCode();
+                if (FontHeightInPoints != null) hash += 23 * FontHeightInPoints.Value.GetHashCode();
+                if (FontName != null) hash += 23 * FontName.GetHashCode();
+                if (Italic != null) hash += 23 * Italic.Value.GetHashCode();
+                if (Strikeout != null) hash += 23 * Strikeout.Value.GetHashCode();
+                if (SuperScript != null) hash += 23 * SuperScript.Value.GetHashCode();
+                if (Underline != null) hash += 23 * Underline.Value.GetHashCode();
+
                 return hash;
             }
         }
@@ -98,7 +145,7 @@ namespace TestParser.Core.XL
         /// <returns>True if the object is equal to this one.</returns>
         public override bool Equals(object value)
         {
-            return Equals((FluentStyle)value);
+            return Equals((FluentStyleDTO)value);
         }
 
         /// <summary>
@@ -106,7 +153,7 @@ namespace TestParser.Core.XL
         /// </summary>
         /// <param name="value">The object to check for equality.</param>
         /// <returns>True if the object is equal to this one.</returns>
-        public bool Equals(FluentStyle value)
+        public bool Equals(FluentStyleDTO value)
         {
             // Use object.ReferenceEquals to avoid infinite loops.
             if (object.ReferenceEquals(value, null))
@@ -136,7 +183,18 @@ namespace TestParser.Core.XL
                 ShrinkToFit == value.ShrinkToFit &&
                 TopBorderColor == value.TopBorderColor &&
                 VerticalAlignment == value.VerticalAlignment &&
-                WrapText == value.WrapText;
+                WrapText == value.WrapText &&
+
+                FontWeight == value.FontWeight &&
+                Charset == value.Charset &&
+                Color == value.Color &&
+                FontHeight == value.FontHeight &&
+                FontHeightInPoints == value.FontHeightInPoints &&
+                FontName == value.FontName &&
+                Italic == value.Italic &&
+                Strikeout == value.Strikeout &&
+                SuperScript == value.SuperScript &&
+                Underline == value.Underline;
         }
 
         /// <summary>
@@ -145,7 +203,7 @@ namespace TestParser.Core.XL
         /// <param name="first">First object.</param>
         /// <param name="second">Second object.</param>
         /// <returns>True if the two objects are equal.</returns>
-        public static bool operator ==(FluentStyle first, FluentStyle second)
+        public static bool operator ==(FluentStyleDTO first, FluentStyleDTO second)
         {
             // Use object.ReferenceEquals to avoid infinite loops.
             if (object.ReferenceEquals(first, null))
@@ -160,9 +218,26 @@ namespace TestParser.Core.XL
         /// <param name="first">First object.</param>
         /// <param name="second">Second object.</param>
         /// <returns>True if the two objects are equal.</returns>
-        public static bool operator !=(FluentStyle first, FluentStyle second)
+        public static bool operator !=(FluentStyleDTO first, FluentStyleDTO second)
         {
             return !(first == second);
+        }
+
+        bool FontIsNeeded
+        {
+            get
+            {
+                return FontWeight != null ||
+                        Charset != null ||
+                        Color != null ||
+                        FontHeight != null ||
+                        FontHeightInPoints != null ||
+                        FontName != null ||
+                        Italic != null ||
+                        Strikeout != null ||
+                        SuperScript != null ||
+                        Underline != null;
+            }
         }
     }
 }

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TestParser.Core.XL;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
+using NPOI.HSSF.Util;
 
 namespace TestParser.Core
 {
@@ -36,6 +38,14 @@ namespace TestParser.Core
             // =============================== Part 1, "Summary By Assembly" ===============================
             SetLargeHeader(row, 0, "Summary By Assembly");
             row = summarySheet.CreateRow(rowNum++);
+
+            var tc = row.CreateCell(0);
+            tc.SetCellValue("hello test cell");
+            tc.SolidFillColor(HSSFColor.Aqua.Index).BorderTop(BorderStyle.Medium).
+                Color(HSSFColor.White.Index).FontWeight(FontBoldWeight.Bold).Underline(FontUnderlineType.Double).
+                ApplyStyle();
+
+            /*
             SetHeader(row, 0, "Assembly");
             SetHeader(row, 1, "Time (secs)");
             SetHeader(row, 2, "Percent");
@@ -86,6 +96,7 @@ namespace TestParser.Core
             // =============================== Part 2, "Summary By Assembly" ===============================
             // =============================== Part 3, "Failing Tests" ===============================
             //SetLargeHeader(row, 0, "Summary By Class");
+            */
         }
 
 

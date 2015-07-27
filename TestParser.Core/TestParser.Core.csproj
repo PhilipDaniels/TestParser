@@ -79,7 +79,7 @@
     <Compile Include="XL\MacroPropertyStyling.cs" />
     <Compile Include="XL\IndividualPropertyStyling.cs" />
     <Compile Include="XL\FluentStyledCell.cs" />
-    <Compile Include="XL\FluentStyle.cs" />
+    <Compile Include="XL\FluentStyleDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

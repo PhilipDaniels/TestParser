@@ -13,7 +13,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     Alignment = alignment
                 }
@@ -25,7 +25,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderBottom = borderBottom
                 }
@@ -37,7 +37,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderDiagonal = borderDiagonal
                 }
@@ -49,7 +49,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderDiagonalColor = colorIndex
                 }
@@ -61,7 +61,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderDiagonalLineStyle = borderDiagonalLineStyle
                 }
@@ -73,7 +73,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderLeft = borderLeft
                 }
@@ -85,7 +85,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderRight = borderRight
                 }
@@ -97,7 +97,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BorderTop = borderTop
                 }
@@ -109,7 +109,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     BottomBorderColor = colorIndex
                 }
@@ -121,7 +121,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     DataFormat = dataFormat
                 }
@@ -133,7 +133,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     FillBackgroundColor = colorIndex
                 }
@@ -145,7 +145,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     FillForegroundColor = colorIndex
                 }
@@ -157,7 +157,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     FillPattern = fillPattern
                 }
@@ -169,7 +169,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     Indention = indention
                 }
@@ -181,7 +181,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     LeftBorderColor = colorIndex
                 }
@@ -193,7 +193,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     RightBorderColor = colorIndex
                 }
@@ -205,7 +205,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     Rotation = rotation
                 }
@@ -217,7 +217,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     ShrinkToFit = shrinkToFit
                 }
@@ -229,7 +229,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     TopBorderColor = colorIndex
                 }
@@ -241,7 +241,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     VerticalAlignment = verticalAlignment
                 }
@@ -253,7 +253,7 @@ namespace TestParser.Core.XL
             return new FluentStyledCell()
             {
                 Cell = cell,
-                Style = new FluentStyle()
+                Style = new FluentStyleDTO()
                 {
                     WrapText = wrapText
                 }

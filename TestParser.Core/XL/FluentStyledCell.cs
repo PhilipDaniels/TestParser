@@ -13,7 +13,7 @@ namespace TestParser.Core.XL
         }
 
         public ICell Cell { get; set; }
-        public FluentStyle Style { get; set; }
+        public FluentStyleDTO Style { get; set; }
 
         public FluentStyledCell ApplyStyle()
         {
@@ -25,7 +25,7 @@ namespace TestParser.Core.XL
                 if (!cachedWorkbookStyles.TryGetValue(styleHash, out wbStyle))
                 {
                     wbStyle = Cell.Sheet.Workbook.CreateCellStyle();
-                    Style.ApplyStyle(wbStyle);
+                    Style.ApplyStyle(Cell.Sheet.Workbook, wbStyle);
                     cachedWorkbookStyles.Add(styleHash, wbStyle);
                 }
             }
@@ -157,6 +157,68 @@ namespace TestParser.Core.XL
         public FluentStyledCell WrapText(bool wrapText)
         {
             Style.WrapText = wrapText;
+            return this;
+        }
+
+
+
+        public FluentStyledCell FontWeight(FontBoldWeight fontWeight)
+        {
+            Style.FontWeight = fontWeight;
+            return this;
+        }
+
+        public FluentStyledCell Charset(short charset)
+        {
+            Style.Charset = charset;
+            return this;
+        }
+
+        public FluentStyledCell Color(short color)
+        {
+            Style.Color = color;
+            return this;
+        }
+
+        public FluentStyledCell FontHeight(double fontHeight)
+        {
+            Style.FontHeight = fontHeight;
+            return this;
+        }
+
+        public FluentStyledCell FontHeightInPoints(short fontHeightInPoints)
+        {
+            Style.FontHeightInPoints = fontHeightInPoints;
+            return this;
+        }
+
+        public FluentStyledCell FontName(string fontName)
+        {
+            Style.FontName = fontName;
+            return this;
+        }
+
+        public FluentStyledCell Italic(bool italic)
+        {
+            Style.Italic = italic;
+            return this;
+        }
+
+        public FluentStyledCell Strikeout(bool strikeout)
+        {
+            Style.Strikeout = strikeout;
+            return this;
+        }
+
+        public FluentStyledCell SuperScript(FontSuperScript superScript)
+        {
+            Style.SuperScript = superScript;
+            return this;
+        }
+
+        public FluentStyledCell Underline(FontUnderlineType underline)
+        {
+            Style.Underline = underline;
             return this;
         }
     }
