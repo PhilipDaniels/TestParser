@@ -75,6 +75,11 @@
     <Compile Include="TestResult.cs" />
     <Compile Include="TestFileFinder.cs" />
     <Compile Include="TrxFileParser.cs" />
+    <Compile Include="XL\ApplicationPropertyStyling.cs" />
+    <Compile Include="XL\MacroPropertyStyling.cs" />
+    <Compile Include="XL\IndividualPropertyStyling.cs" />
+    <Compile Include="XL\FluentStyledCell.cs" />
+    <Compile Include="XL\FluentStyle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
