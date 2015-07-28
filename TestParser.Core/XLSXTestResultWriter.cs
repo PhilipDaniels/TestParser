@@ -45,6 +45,10 @@ namespace TestParser.Core
                 Color(HSSFColor.White.Index).FontWeight(FontBoldWeight.Bold).Underline(FontUnderlineType.Double).
                 ApplyStyle();
 
+            tc = row.CreateCell(5);
+            tc.SetCellValue(0.67);
+            tc.Format("0.00%").Color(HSSFColor.BrightGreen.Index);
+
             /*
             SetHeader(row, 0, "Assembly");
             SetHeader(row, 1, "Time (secs)");

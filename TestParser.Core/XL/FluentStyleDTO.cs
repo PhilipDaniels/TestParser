@@ -4,7 +4,7 @@ namespace TestParser.Core.XL
 {
     public class FluentStyleDTO
     {
-        // Main cell style settings.
+        #region Main cell style properties
         public HorizontalAlignment? Alignment { get; set; }
         public BorderStyle? BorderBottom { get; set; }
         public BorderDiagonal? BorderDiagonal { get; set; }
@@ -26,8 +26,9 @@ namespace TestParser.Core.XL
         public short? TopBorderColor { get; set; }
         public VerticalAlignment? VerticalAlignment { get; set; }
         public bool? WrapText { get; set; }
-        
-        // Font settings.
+        #endregion
+
+        #region Font properties
         public FontBoldWeight? FontWeight { get; set; }
         public short? Charset { get; set; }
         public short? Color { get; set; }
@@ -38,9 +39,19 @@ namespace TestParser.Core.XL
         public bool? Strikeout { get; set; }
         public FontSuperScript? SuperScript { get; set; }
         public FontUnderlineType? Underline { get; set; }
+        #endregion
+
+        public string Format { get; set; }
 
         public void ApplyStyle(IWorkbook workbook, ICellStyle destination)
         {
+            // If users sets format string this overrides the DataFormat property.
+            if (Format != null)
+            {
+                var dataFormat = workbook.CreateDataFormat();
+                DataFormat = dataFormat.GetFormat(Format);
+            }
+
             if (Alignment != null) destination.Alignment = Alignment.Value;
             if (BorderBottom != null) destination.BorderBottom = BorderBottom.Value;
             if (BorderDiagonal != null) destination.BorderDiagonal = BorderDiagonal.Value;
@@ -80,10 +91,6 @@ namespace TestParser.Core.XL
 
                 destination.SetFont(font);
             }
-
-            //dateStyle = workbook.CreateCellStyle();
-            //IDataFormat dataFormat = workbook.CreateDataFormat();
-            //dateStyle.DataFormat = dataFormat.GetFormat("yyyy-MM-dd HH:mm:ss");
         }
 
         /// <summary>
@@ -133,6 +140,8 @@ namespace TestParser.Core.XL
                 if (Strikeout != null) hash += 23 * Strikeout.Value.GetHashCode();
                 if (SuperScript != null) hash += 23 * SuperScript.Value.GetHashCode();
                 if (Underline != null) hash += 23 * Underline.Value.GetHashCode();
+
+                if (Format != null) hash += 23 * Format.GetHashCode();
 
                 return hash;
             }
@@ -194,7 +203,9 @@ namespace TestParser.Core.XL
                 Italic == value.Italic &&
                 Strikeout == value.Strikeout &&
                 SuperScript == value.SuperScript &&
-                Underline == value.Underline;
+                Underline == value.Underline &&
+
+                Format == value.Format;
         }
 
         /// <summary>

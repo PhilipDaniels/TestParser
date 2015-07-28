@@ -34,6 +34,7 @@ namespace TestParser.Core.XL
             return this;
         }
 
+        #region Main cell style properties
         public FluentStyledCell Alignment(HorizontalAlignment alignment)
         {
             Style.Alignment = alignment;
@@ -159,9 +160,9 @@ namespace TestParser.Core.XL
             Style.WrapText = wrapText;
             return this;
         }
+        #endregion
 
-
-
+        #region Font Properties
         public FluentStyledCell FontWeight(FontBoldWeight fontWeight)
         {
             Style.FontWeight = fontWeight;
@@ -219,6 +220,13 @@ namespace TestParser.Core.XL
         public FluentStyledCell Underline(FontUnderlineType underline)
         {
             Style.Underline = underline;
+            return this;
+        }
+        #endregion
+
+        public FluentStyledCell Format(string format)
+        {
+            Style.Format = format;
             return this;
         }
     }

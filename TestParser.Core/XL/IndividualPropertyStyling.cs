@@ -8,6 +8,7 @@ namespace TestParser.Core.XL
     /// </summary>
     public static class IndividualPropertyStyling
     {
+        #region Main cell style properties
         public static FluentStyledCell Alignment(this ICell cell, HorizontalAlignment alignment)
         {
             return new FluentStyledCell()
@@ -256,6 +257,141 @@ namespace TestParser.Core.XL
                 Style = new FluentStyleDTO()
                 {
                     WrapText = wrapText
+                }
+            };
+        }
+        #endregion
+
+        #region Font Properties
+        public static FluentStyledCell FontWeight(this ICell cell, FontBoldWeight fontWeight)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    FontWeight = fontWeight
+                }
+            };
+        }
+
+        public static FluentStyledCell Charset(this ICell cell, short charset)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    Charset = charset
+                }
+            };
+        }
+
+        public static FluentStyledCell Color(this ICell cell, short color)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    Color = color
+                }
+            };
+        }
+
+        public static FluentStyledCell FontHeight(this ICell cell, double fontHeight)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    FontHeight = fontHeight
+                }
+            };
+        }
+
+        public static FluentStyledCell FontHeightInPoints(this ICell cell, short fontHeightInPoints)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    FontHeightInPoints = fontHeightInPoints
+                }
+            };
+        }
+
+        public static FluentStyledCell FontName(this ICell cell, string fontName)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    FontName = fontName
+                }
+            };
+        }
+
+        public static FluentStyledCell Italic(this ICell cell, bool italic)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    Italic = italic
+                }
+            };
+        }
+
+        public static FluentStyledCell Strikeout(this ICell cell, bool strikeout)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    Strikeout = strikeout
+                }
+            };
+        }
+
+        public static FluentStyledCell SuperScript(this ICell cell, FontSuperScript superScript)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    SuperScript = superScript
+                }
+            };
+        }
+
+        public static FluentStyledCell Underline(this ICell cell, FontUnderlineType underline)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    Underline = underline
+                }
+            };
+        }
+        #endregion
+
+        public static FluentStyledCell Format(this ICell cell, string format)
+        {
+            return new FluentStyledCell()
+            {
+                Cell = cell,
+                Style = new FluentStyleDTO()
+                {
+                    Format = format
                 }
             };
         }
