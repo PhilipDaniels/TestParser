@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TestParser.Core.XL;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
-using NPOI.HSSF.Util;
+using TestParser.Core.XL;
 
 namespace TestParser.Core
 {
@@ -39,8 +38,10 @@ namespace TestParser.Core
             var sba = TestResultSummaryByAssembly.Summarise(testResults);
 
             SetText(row, 0, "Summary By Assembly").LargeHeaderStyle().ApplyStyle();
-            row = summarySheet.CreateRow(rowNum++);
+            row.HeightInPoints = 30;
 
+            row = summarySheet.CreateRow(rowNum++);
+            
             SetText(row, 0, "Assembly").HeaderStyle().ApplyStyle();
             SetText(row, 1, "Class").HeaderStyle().ApplyStyle();
             SetText(row, 2, "Time (secs)").HeaderStyle().ApplyStyle();
@@ -68,23 +69,27 @@ namespace TestParser.Core
                 }
             }
 
-
-            /*
             row = summarySheet.CreateRow(rowNum++);
-            SetFormula(row, 1, String.Format("SUM(B3:B{0})", rowNum - 1));
-            SetFormula(row, 2, String.Format("", rowNum - 1));
-            SetFormula(row, 3, String.Format("SUM(D3:D{0})", rowNum - 1));
-            int maxCol = 4 + outcomes.Count();
-            for (int cn = 4; cn < maxCol; cn++)
+            SetFormula(row, 2, String.Format("SUM(C3:C{0})", rowNum - 1)).HeaderStyle().ApplyStyle();
+            SetFormula(row, 3, String.Format("F{0}/E{0}", rowNum)).HeaderStyle().FormatPercentage().ApplyStyle();
+            SetFormula(row, 4, String.Format("SUM(E3:E{0})", rowNum - 1)).HeaderStyle().ApplyStyle();
+            int maxCol = 5 + sba.ElementAt(0).Outcomes.Count();
+            for (int cn = 5; cn < maxCol; cn++)
             {
                 string colRef = CellReference.ConvertNumToColString(cn);
-                SetFormula(row, cn, String.Format("SUM({0}3:{0}{1})", colRef, rowNum - 1));
+                SetFormula(row, cn, String.Format("SUM({0}3:{0}{1})", colRef, rowNum - 1)).HeaderStyle().ApplyStyle();
             }
 
-            // =============================== Part 2, "Summary By Assembly" ===============================
+           
+            // =============================== Part 2, "Summary By Class" ===============================
+
+
+
             // =============================== Part 3, "Failing Tests" ===============================
             //SetLargeHeader(row, 0, "Summary By Class");
-            */
+
+            for (colNum = 0; colNum < 10; colNum++)
+                summarySheet.AutoSizeColumn(colNum);
         }
 
 
@@ -277,10 +282,5 @@ namespace TestParser.Core
             }
         }
         ICellStyle percentRedStyle;
-
-        ICellStyle MakeStyle(int backgroundColor, string dataFormat, bool bold, bool italic, int fontHeight)
-        {
-            return null;
-        }
     }
 }
