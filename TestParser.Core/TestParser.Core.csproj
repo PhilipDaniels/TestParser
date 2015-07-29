@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Quoter.cs" />
+    <Compile Include="ResultOutcome.cs" />
+    <Compile Include="TestResultSummaryByAssembly.cs" />
     <Compile Include="XLSXTestResultWriter.cs" />
     <Compile Include="KVPTestResultWriter.cs" />
     <Compile Include="JSONTestResultWriter.cs" />
