@@ -9,15 +9,7 @@ namespace TestParser.Core
     [DebuggerDisplay("{Outcome}, Num={NumTests}, Duration={DurationInSeconds} secs.")]
     public class ResultOutcomeSummary
     {
-        /// <summary>
-        /// The name of the passed outcome.
-        /// </summary>
-        public const string PassedOutcome = "Passed";
 
-        /// <summary>
-        /// The name of the failed outcome.
-        /// </summary>
-        public const string FailedOutcome = "Failed";
 
         /// <summary>
         /// Gets or sets the outcome, e.g. "Passed" or "Inconclusive".
@@ -53,14 +45,14 @@ namespace TestParser.Core
         public static IEnumerable<string> GetOutcomeNames(IEnumerable<TestResult> testResults)
         {
             var finalOutcomes = new List<string>();
-            finalOutcomes.Add(PassedOutcome);
-            finalOutcomes.Add(FailedOutcome);
+            finalOutcomes.Add(KnownOutcomes.Passed);
+            finalOutcomes.Add(KnownOutcomes.Failed);
 
             var remainingOutcomes = new List<string>();
             foreach (var r in testResults)
             {
                 string oc = r.Outcome;
-                if (oc != PassedOutcome && oc != FailedOutcome && !remainingOutcomes.Contains(oc))
+                if (oc != KnownOutcomes.Passed && oc != KnownOutcomes.Failed && !remainingOutcomes.Contains(oc))
                     remainingOutcomes.Add(oc);
             }
 

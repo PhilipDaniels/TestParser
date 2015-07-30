@@ -52,7 +52,7 @@ namespace TestParser.Core
         {
             get
             {
-                return Outcomes.Where(c => c.Outcome == ResultOutcomeSummary.PassedOutcome).Single().NumTests;
+                return Outcomes.Where(c => c.Outcome == KnownOutcomes.Passed).Single().NumTests;
             }
         }
 

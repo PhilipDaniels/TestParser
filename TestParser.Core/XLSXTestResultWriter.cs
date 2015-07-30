@@ -16,90 +16,21 @@ namespace TestParser.Core
         IWorkbook workbook;
         ISheet summarySheet;
         ISheet resultsSheet;
+        ISheetConditionalFormatting summarySheetConditionalFormatting;
+        ISheetConditionalFormatting resultsSheetConditionalFormatting;
 
         public void WriteResults(Stream s, IEnumerable<TestResult> testResults)
         {
             workbook = new XSSFWorkbook();
             summarySheet = workbook.CreateSheet("Summary");
             resultsSheet = workbook.CreateSheet("TestResults");
+            summarySheetConditionalFormatting = summarySheet.SheetConditionalFormatting;
+            resultsSheetConditionalFormatting = resultsSheet.SheetConditionalFormatting;
 
             CreateResultsSheet(testResults);
             CreateSummarySheet(testResults);
 
             workbook.Write(s);
-        }
-
-        int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummary> summary)
-        {
-            int colNum = 0; 
-            int topOfSums = rowNum + 3;
-
-            IRow row = summarySheet.CreateRow(rowNum++);
-            row.SetCell(0, largeHeaderName).LargeHeaderStyle().ApplyStyle();
-            row.HeightInPoints = 30;
-            var range = new CellRangeAddress(row.RowNum, row.RowNum, 0, 6);
-            summarySheet.AddMergedRegion(range);
-
-            row = summarySheet.CreateRow(rowNum++);
-            row.SetCell(0, "Assembly").HeaderStyle().ApplyStyle();
-            row.SetCell(1, "Class").HeaderStyle().ApplyStyle();
-            row.SetCell(2, "Time (secs)").HeaderStyle().ApplyStyle();
-            row.SetCell(3, "Percent").HeaderStyle().ApplyStyle();
-            row.SetCell(4, "Total").HeaderStyle().ApplyStyle();
-            colNum = 5;
-            foreach (var oc in summary.ElementAt(0).Outcomes)
-            {
-                row.SetCell(colNum++, oc.Outcome).HeaderStyle().ApplyStyle();
-            }
-
-            foreach (var s in summary)
-            {
-                row = summarySheet.CreateRow(rowNum++);
-                row.SetCell(0, s.AssemblyFileName);
-                row.SetCell(1, s.ClassName);
-                row.SetCell(2, s.TotalDurationInSeconds).Format("0.00").ApplyStyle();
-                row.SetFormula(3, "F{0}/E{0}", rowNum).FormatPercentage().ApplyStyle();
-                row.SetCell(4, s.TotalTests);
-
-                colNum = 5;
-                foreach (var oc in s.Outcomes)
-                {
-                    var cell = row.SetCell(colNum++, oc.NumTests);
-                    if (oc.Outcome == ResultOutcomeSummary.FailedOutcome && oc.NumTests > 0)
-                        cell.SolidFillColor(HSSFColor.Red.Index).ApplyStyle();
-                }
-            }
-
-            row = summarySheet.CreateRow(rowNum++);
-            row.SetFormula(2, "SUM(C{0}:C{1})", topOfSums, rowNum - 1).SummaryStyle().Format("0.00").ApplyStyle();
-            row.SetFormula(3, "F{0}/E{0}", rowNum).SummaryStyle().FormatPercentage().ApplyStyle();
-            row.SetFormula(4, "SUM(E{0}:E{1})", topOfSums, rowNum - 1).SummaryStyle().ApplyStyle();
-            int maxCol = 5 + summary.ElementAt(0).Outcomes.Count();
-            for (int cn = 5; cn < maxCol; cn++)
-            {
-                string colRef = CellReference.ConvertNumToColString(cn);
-                row.SetFormula(cn, "SUM({1}{0}:{1}{2})", topOfSums, colRef, rowNum - 1).SummaryStyle().ApplyStyle();
-            }
-
-            return rowNum;
-        }
-
-        void CreateSummarySheet(IEnumerable<TestResult> testResults)
-        {
-            var sba = TestResultSummary.SummariseByAssembly(testResults);
-            int rowNum = CreateSummary("Summary By Assembly", 0, sba);
-
-            var sbc = TestResultSummary.SummariseByClass(testResults);
-            rowNum++;
-            rowNum = CreateSummary("Summary By Class", rowNum, sbc);
-
-            // Set the widths.
-            summarySheet.SetColumnWidth(0, 10000);
-            summarySheet.SetColumnWidth(1, 10000);
-            summarySheet.SetColumnWidth(2, 3000);
-            summarySheet.SetColumnWidth(3, 2500);
-            for (int colNum = 4; colNum <= 4 + sba.ElementAt(0).Outcomes.Count(); colNum++)
-                summarySheet.SetColumnWidth(colNum, 2500);
         }
 
         void CreateResultsSheet(IEnumerable<TestResult> testResults)
@@ -119,7 +50,7 @@ namespace TestParser.Core
             const int ColAssemblyPathName = 12;
             const int ColFullClassName = 13;
             const int ColComputerName = 14;
-            
+
 
             IRow row = resultsSheet.CreateRow(0);
             row.SetCell(ColResultsPathName, "ResultsPathName").HeaderStyle().ApplyStyle(); ;
@@ -164,84 +95,182 @@ namespace TestParser.Core
             // Freeze the header row.
             resultsSheet.CreateFreezePane(0, 1, 0, 1);
 
+            resultsSheet.SetColumnWidth(ColAssemblyFileName, 10000);
+            resultsSheet.SetColumnWidth(ColClassName, 10000);
+            resultsSheet.SetColumnWidth(ColTestName, 10000);
+            resultsSheet.SetColumnWidth(ColOutcome, 3000);
+            resultsSheet.SetColumnWidth(ColDurationInSeconds, 3000);
+            resultsSheet.SetColumnWidth(ColErrorMessage, 3000);
+            resultsSheet.SetColumnWidth(ColStackTrace, 3000);
+            resultsSheet.SetColumnWidth(ColStartTime, 5500);
+            resultsSheet.SetColumnWidth(ColEndTime, 5500);
+            resultsSheet.SetColumnWidth(ColDuration, 5500);
+
+            string range = String.Format("D2:D{0}", i);
+            var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
+            resultsSheetConditionalFormatting.AddConditionalFormatting(region, ResultOutcomeFormattingRules);
+        }
+
+        void CreateSummarySheet(IEnumerable<TestResult> testResults)
+        {
+            var sba = TestResultSummary.SummariseByAssembly(testResults);
+            int rowNum = CreateSummary("Summary By Assembly", 0, sba);
+
+            var sbc = TestResultSummary.SummariseByClass(testResults);
+            rowNum++;
+            rowNum = CreateSummary("Summary By Class", rowNum, sbc);
+
             // Set the widths.
-            resultsSheet.SetColumnWidth(0, 10000);
-            resultsSheet.SetColumnWidth(1, 10000);
-            resultsSheet.SetColumnWidth(2, 10000);
-            resultsSheet.SetColumnWidth(3, 3000);
-            resultsSheet.SetColumnWidth(4, 3000);
-            resultsSheet.SetColumnWidth(5, 3000);
-            resultsSheet.SetColumnWidth(6, 3000);
-            resultsSheet.SetColumnWidth(7, 5500);
-            resultsSheet.SetColumnWidth(8, 5500);
-            resultsSheet.SetColumnWidth(9, 5500);
+            summarySheet.SetColumnWidth(0, 10000);
+            summarySheet.SetColumnWidth(1, 10000);
+            summarySheet.SetColumnWidth(2, 3000);
+            summarySheet.SetColumnWidth(3, 2500);
+            for (int colNum = 4; colNum <= 4 + sba.ElementAt(0).Outcomes.Count(); colNum++)
+                summarySheet.SetColumnWidth(colNum, 2500);
         }
 
-        /*
-        ICell SetPercent(IRow row, int column, double number)
+        int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummary> summary)
         {
-            var cell = row.CreateCell(column);
-            cell.SetCellValue(number);
-            if (number < 0.9)
-                cell.CellStyle = PercentRedStyle;
-            else if (number < 1.0)
-                cell.CellStyle = PercentYellowStyle;
-            else
-                cell.CellStyle = PercentGreenStyle;
+            int colNum = 0;
+            int topOfSums = rowNum + 3;
 
-            return cell;
+            IRow row = summarySheet.CreateRow(rowNum++);
+            row.SetCell(0, largeHeaderName).LargeHeaderStyle().ApplyStyle();
+            row.HeightInPoints = 30;
+            var range = new CellRangeAddress(row.RowNum, row.RowNum, 0, 6);
+            summarySheet.AddMergedRegion(range);
+
+            row = summarySheet.CreateRow(rowNum++);
+            row.SetCell(0, "Assembly").HeaderStyle().ApplyStyle();
+            row.SetCell(1, "Class").HeaderStyle().ApplyStyle();
+            row.SetCell(2, "Time (secs)").HeaderStyle().ApplyStyle();
+            row.SetCell(3, "Percent").HeaderStyle().ApplyStyle();
+            row.SetCell(4, "Total").HeaderStyle().ApplyStyle();
+            colNum = 5;
+            foreach (var oc in summary.ElementAt(0).Outcomes)
+            {
+                row.SetCell(colNum++, oc.Outcome).HeaderStyle().ApplyStyle();
+            }
+
+            foreach (var s in summary)
+            {
+                row = summarySheet.CreateRow(rowNum++);
+                row.SetCell(0, s.AssemblyFileName);
+                row.SetCell(1, s.ClassName);
+                row.SetCell(2, s.TotalDurationInSeconds).Format("0.00").ApplyStyle();
+                row.SetFormula(3, "F{0}/E{0}", rowNum).FormatPercentage().ApplyStyle();
+                row.SetCell(4, s.TotalTests);
+
+                colNum = 5;
+                foreach (var oc in s.Outcomes)
+                {
+                    var cell = row.SetCell(colNum++, oc.NumTests);
+                    if (oc.Outcome == KnownOutcomes.Failed && oc.NumTests > 0)
+                        cell.SolidFillColor(HSSFColor.Red.Index).ApplyStyle();
+                }
+            }
+
+            row = summarySheet.CreateRow(rowNum++);
+            row.SetFormula(2, "SUM(C{0}:C{1})", topOfSums, rowNum - 1).SummaryStyle().Format("0.00").ApplyStyle();
+            row.SetFormula(3, "F{0}/E{0}", rowNum).SummaryStyle().FormatPercentage().ApplyStyle();
+            row.SetFormula(4, "SUM(E{0}:E{1})", topOfSums, rowNum - 1).SummaryStyle().ApplyStyle();
+            int maxCol = 5 + summary.ElementAt(0).Outcomes.Count();
+            for (int cn = 5; cn < maxCol; cn++)
+            {
+                string colRef = CellReference.ConvertNumToColString(cn);
+                row.SetFormula(cn, "SUM({1}{0}:{1}{2})", topOfSums, colRef, rowNum - 1).SummaryStyle().ApplyStyle();
+            }
+
+            ConditionalFormatPercentage(topOfSums, rowNum - 1);
+            ConditionalFormatFails(topOfSums, rowNum - 1);
+
+            return rowNum;
         }
 
-        ICellStyle PercentGreenStyle
+        void ConditionalFormatPercentage(int rowFromInclusive, int rowtoInclusive)
+        {
+            string range = String.Format("D{0}:D{1}", rowFromInclusive, rowtoInclusive);
+            var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
+            summarySheetConditionalFormatting.AddConditionalFormatting(region, SummaryPercentageFormattingRules);
+        }
+
+        void ConditionalFormatFails(int rowFromInclusive, int rowtoInclusive)
+        {
+            string range = String.Format("G{0}:G{1}", rowFromInclusive, rowtoInclusive);
+            var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
+            summarySheetConditionalFormatting.AddConditionalFormatting(region, SummaryFailedFormattingRules);
+        }
+
+        IConditionalFormattingRule[] SummaryPercentageFormattingRules
         {
             get
             {
-                if (percentGreenStyle == null)
+                if (summaryPercentageFormattingRules == null)
                 {
-                    percentGreenStyle = workbook.CreateCellStyle();
-                    percentGreenStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Green.Index;
-                    percentGreenStyle.FillPattern = FillPattern.SolidForeground;
-                    percentGreenStyle.DataFormat = PercentFormat;
+                    IConditionalFormattingRule rule1 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.GreaterThanOrEqual, "1");
+                    IPatternFormatting fill1 = rule1.CreatePatternFormatting();
+                    fill1.FillBackgroundColor = IndexedColors.BrightGreen.Index;
+                    fill1.FillPattern = (short)FillPattern.SolidForeground;
+
+                    IConditionalFormattingRule rule2 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.GreaterThanOrEqual, "0.9");
+                    IPatternFormatting fill2 = rule2.CreatePatternFormatting();
+                    fill2.FillBackgroundColor = IndexedColors.Yellow.Index;
+                    fill2.FillPattern = (short)FillPattern.SolidForeground;
+
+                    IConditionalFormattingRule rule3 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.LessThan, "0.9");
+                    IPatternFormatting fill3 = rule3.CreatePatternFormatting();
+                    fill3.FillBackgroundColor = IndexedColors.Red.Index;
+                    fill3.FillPattern = (short)FillPattern.SolidForeground;
+
+                    summaryPercentageFormattingRules = new IConditionalFormattingRule[] { rule1, rule2, rule3 };
                 }
 
-                return percentGreenStyle;
+                return summaryPercentageFormattingRules;
             }
         }
-        ICellStyle percentGreenStyle;
+        IConditionalFormattingRule[] summaryPercentageFormattingRules;
 
-        ICellStyle PercentYellowStyle
+        IConditionalFormattingRule[] SummaryFailedFormattingRules
         {
             get
             {
-                if (percentYellowStyle == null)
+                if (summaryFailedFormattingRules == null)
                 {
-                    percentYellowStyle = workbook.CreateCellStyle();
-                    percentYellowStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Yellow.Index;
-                    percentYellowStyle.FillPattern = FillPattern.SolidForeground;
-                    percentYellowStyle.DataFormat = PercentFormat;
+                    IConditionalFormattingRule rule1 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.NotEqual, "0");
+                    IPatternFormatting fill1 = rule1.CreatePatternFormatting();
+                    fill1.FillBackgroundColor = IndexedColors.Red.Index;
+                    fill1.FillPattern = (short)FillPattern.SolidForeground;
+
+                    summaryFailedFormattingRules = new IConditionalFormattingRule[] { rule1 };
                 }
 
-                return percentYellowStyle;
+                return summaryFailedFormattingRules;
             }
         }
-        ICellStyle percentYellowStyle;
+        IConditionalFormattingRule[] summaryFailedFormattingRules;
 
-        ICellStyle PercentRedStyle
+        IConditionalFormattingRule[] ResultOutcomeFormattingRules
         {
             get
             {
-                if (percentRedStyle == null)
+                if (resultOutcomeFormattingRules == null)
                 {
-                    percentRedStyle = workbook.CreateCellStyle();
-                    percentRedStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-                    percentRedStyle.FillPattern = FillPattern.SolidForeground;
-                    percentRedStyle.DataFormat = PercentFormat;
+                    IConditionalFormattingRule rule1 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.Equal, "\"" + KnownOutcomes.Passed + "\"");
+                    IPatternFormatting fill1 = rule1.CreatePatternFormatting();
+                    fill1.FillBackgroundColor = IndexedColors.BrightGreen.Index;
+                    fill1.FillPattern = (short)FillPattern.SolidForeground;
+
+                    IConditionalFormattingRule rule2 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.Equal, "\"" + KnownOutcomes.Failed + "\"");
+                    IPatternFormatting fill2 = rule2.CreatePatternFormatting();
+                    fill2.FillBackgroundColor = IndexedColors.Red.Index;
+                    fill2.FillPattern = (short)FillPattern.SolidForeground;
+
+                    resultOutcomeFormattingRules = new IConditionalFormattingRule[] { rule1, rule2 };
                 }
 
-                return percentRedStyle;
+                return resultOutcomeFormattingRules;
             }
         }
-        ICellStyle percentRedStyle;
-        */
+        IConditionalFormattingRule[] resultOutcomeFormattingRules;
     }
 }

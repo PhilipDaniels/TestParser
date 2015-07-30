@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KnownOutcomes.cs" />
     <Compile Include="Quoter.cs" />
     <Compile Include="ResultOutcomeSummary.cs" />
     <Compile Include="TestResultBase.cs" />
