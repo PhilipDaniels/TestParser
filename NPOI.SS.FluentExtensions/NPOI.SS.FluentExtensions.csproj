@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{73426E82-1556-4896-A7EA-7BDA7FEF8D4E}</ProjectGuid>
+    <ProjectGuid>{2546412D-E22E-4608-A272-28B8916CAB72}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestParser.Core</RootNamespace>
-    <AssemblyName>TestParser.Core</AssemblyName>
+    <RootNamespace>NPOI.SS.FluentExtensions</RootNamespace>
+    <AssemblyName>NPOI.SS.FluentExtensions</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,29 +31,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NPOI, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+    <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="NPOI.OOXML, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+    <Reference Include="NPOI.OOXML">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OOXML.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="NPOI.OpenXml4Net, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+    <Reference Include="NPOI.OpenXml4Net">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="NPOI.OpenXmlFormats, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+    <Reference Include="NPOI.OpenXmlFormats">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,31 +55,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Quoter.cs" />
-    <Compile Include="ResultOutcomeSummary.cs" />
-    <Compile Include="TestResultBase.cs" />
-    <Compile Include="TestResultSummary.cs" />
-    <Compile Include="XLSXTestResultWriter.cs" />
-    <Compile Include="KVPTestResultWriter.cs" />
-    <Compile Include="JSONTestResultWriter.cs" />
-    <Compile Include="CSVTestResultWriter.cs" />
-    <Compile Include="Glob.cs" />
-    <Compile Include="ITestResultWriter.cs" />
-    <Compile Include="OutputFormat.cs" />
+    <Compile Include="FluentCell.cs" />
+    <Compile Include="FluentStyle.cs" />
+    <Compile Include="ICellExtensions.cs" />
+    <Compile Include="IRowExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestResult.cs" />
-    <Compile Include="TestFileFinder.cs" />
-    <Compile Include="TrxFileParser.cs" />
-    <Compile Include="XL\ApplicationPropertyStyling.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NPOI.SS.FluentExtensions\NPOI.SS.FluentExtensions.csproj">
-      <Project>{2546412d-e22e-4608-a272-28b8916cab72}</Project>
-      <Name>NPOI.SS.FluentExtensions</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

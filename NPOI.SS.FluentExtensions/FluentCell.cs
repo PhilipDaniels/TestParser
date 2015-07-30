@@ -1,22 +1,27 @@
 ﻿using System.Collections.Generic;
-using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 
-namespace TestParser.Core.XL
+namespace NPOI.SS.FluentExtensions
 {
-    public class FluentStyledCell
+    public class FluentCell
     {
         static Dictionary<int, ICellStyle> cachedWorkbookStyles;
 
-        static FluentStyledCell()
+        static FluentCell()
         {
             cachedWorkbookStyles = new Dictionary<int, ICellStyle>();
         }
 
-        public ICell Cell { get; set; }
-        public FluentStyleDTO Style { get; set; }
+        public FluentCell(ICell cell)
+        {
+            Cell = cell;
+            Style = new FluentStyle();
+        }
 
-        public FluentStyledCell ApplyStyle()
+        public ICell Cell { get; set; }
+        public FluentStyle Style { get; set; }
+
+        public FluentCell ApplyStyle()
         {
             int styleHash = Style.GetHashCode();
             ICellStyle wbStyle;
@@ -36,127 +41,127 @@ namespace TestParser.Core.XL
         }
 
         #region Main cell style properties
-        public FluentStyledCell Alignment(HorizontalAlignment alignment)
+        public FluentCell Alignment(HorizontalAlignment alignment)
         {
             Style.Alignment = alignment;
             return this;
         }
 
-        public FluentStyledCell BorderBottom(BorderStyle borderStyle)
+        public FluentCell BorderBottom(BorderStyle borderStyle)
         {
             Style.BorderBottom = borderStyle;
             return this;
         }
 
-        public FluentStyledCell BorderDiagonal(BorderDiagonal borderDiagonal)
+        public FluentCell BorderDiagonal(BorderDiagonal borderDiagonal)
         {
             Style.BorderDiagonal = borderDiagonal;
             return this;
         }
 
-        public FluentStyledCell BorderDiagonalColor(short borderDiagonalColor)
+        public FluentCell BorderDiagonalColor(short borderDiagonalColor)
         {
             Style.BorderDiagonalColor = borderDiagonalColor;
             return this;
         }
 
-        public FluentStyledCell BorderDiagonalLineStyle(BorderStyle borderDiagonalLineStyle)
+        public FluentCell BorderDiagonalLineStyle(BorderStyle borderDiagonalLineStyle)
         {
             Style.BorderDiagonalLineStyle = borderDiagonalLineStyle;
             return this;
         }
 
-        public FluentStyledCell BorderLeft(BorderStyle borderLeft)
+        public FluentCell BorderLeft(BorderStyle borderLeft)
         {
             Style.BorderLeft = borderLeft;
             return this;
         }
 
-        public FluentStyledCell BorderRight(BorderStyle borderRight)
+        public FluentCell BorderRight(BorderStyle borderRight)
         {
             Style.BorderRight = borderRight;
             return this;
         }
 
-        public FluentStyledCell BorderTop(BorderStyle borderTop)
+        public FluentCell BorderTop(BorderStyle borderTop)
         {
             Style.BorderTop = borderTop;
             return this;
         }
 
-        public FluentStyledCell BottomBorderColor(short colorIndex)
+        public FluentCell BottomBorderColor(short colorIndex)
         {
             Style.BottomBorderColor = colorIndex;
             return this;
         }
 
-        public FluentStyledCell DataFormat(short dataFormat)
+        public FluentCell DataFormat(short dataFormat)
         {
             Style.DataFormat = dataFormat;
             return this;
         }
 
-        public FluentStyledCell FillBackgroundColor(short colorIndex)
+        public FluentCell FillBackgroundColor(short colorIndex)
         {
             Style.FillBackgroundColor = colorIndex;
             return this;
         }
 
-        public FluentStyledCell FillForegroundColor(short colorIndex)
+        public FluentCell FillForegroundColor(short colorIndex)
         {
             Style.FillForegroundColor = colorIndex;
             return this;
         }
 
-        public FluentStyledCell FillPattern(FillPattern fillPattern)
+        public FluentCell FillPattern(FillPattern fillPattern)
         {
             Style.FillPattern = fillPattern;
             return this;
         }
 
-        public FluentStyledCell Indention(short indention)
+        public FluentCell Indention(short indention)
         {
             Style.Indention = indention;
             return this;
         }
 
-        public FluentStyledCell LeftBorderColor(short colorIndex)
+        public FluentCell LeftBorderColor(short colorIndex)
         {
             Style.LeftBorderColor = colorIndex;
             return this;
         }
 
-        public FluentStyledCell RightBorderColor(short colorIndex)
+        public FluentCell RightBorderColor(short colorIndex)
         {
             Style.RightBorderColor = colorIndex;
             return this;
         }
 
-        public FluentStyledCell Rotation(short rotation)
+        public FluentCell Rotation(short rotation)
         {
             Style.Rotation = rotation;
             return this;
         }
 
-        public FluentStyledCell ShrinkToFit(bool shrinkToFit)
+        public FluentCell ShrinkToFit(bool shrinkToFit)
         {
             Style.ShrinkToFit = shrinkToFit;
             return this;
         }
 
-        public FluentStyledCell TopBorderColor(short colorIndex)
+        public FluentCell TopBorderColor(short colorIndex)
         {
             Style.TopBorderColor = colorIndex;
             return this;
         }
 
-        public FluentStyledCell VerticalAlignment(VerticalAlignment verticalAlignment)
+        public FluentCell VerticalAlignment(VerticalAlignment verticalAlignment)
         {
             Style.VerticalAlignment = verticalAlignment;
             return this;
         }
 
-        public FluentStyledCell WrapText(bool wrapText)
+        public FluentCell WrapText(bool wrapText)
         {
             Style.WrapText = wrapText;
             return this;
@@ -164,70 +169,89 @@ namespace TestParser.Core.XL
         #endregion
 
         #region Font Properties
-        public FluentStyledCell FontWeight(FontBoldWeight fontWeight)
+        public FluentCell FontWeight(FontBoldWeight fontWeight)
         {
             Style.FontWeight = fontWeight;
             return this;
         }
 
-        public FluentStyledCell Charset(short charset)
+        public FluentCell Charset(short charset)
         {
             Style.Charset = charset;
             return this;
         }
 
-        public FluentStyledCell Color(short color)
+        public FluentCell Color(short color)
         {
             Style.Color = color;
             return this;
         }
 
-        public FluentStyledCell FontHeight(double fontHeight)
+        public FluentCell FontHeight(double fontHeight)
         {
             Style.FontHeight = fontHeight;
             return this;
         }
 
-        public FluentStyledCell FontHeightInPoints(short fontHeightInPoints)
+        public FluentCell FontHeightInPoints(short fontHeightInPoints)
         {
             Style.FontHeightInPoints = fontHeightInPoints;
             return this;
         }
 
-        public FluentStyledCell FontName(string fontName)
+        public FluentCell FontName(string fontName)
         {
             Style.FontName = fontName;
             return this;
         }
 
-        public FluentStyledCell Italic(bool italic)
+        public FluentCell Italic(bool italic)
         {
             Style.Italic = italic;
             return this;
         }
 
-        public FluentStyledCell Strikeout(bool strikeout)
+        public FluentCell Strikeout(bool strikeout)
         {
             Style.Strikeout = strikeout;
             return this;
         }
 
-        public FluentStyledCell SuperScript(FontSuperScript superScript)
+        public FluentCell SuperScript(FontSuperScript superScript)
         {
             Style.SuperScript = superScript;
             return this;
         }
 
-        public FluentStyledCell Underline(FontUnderlineType underline)
+        public FluentCell Underline(FontUnderlineType underline)
         {
             Style.Underline = underline;
             return this;
         }
         #endregion
 
-        public FluentStyledCell Format(string format)
+        public FluentCell Format(string format)
         {
             Style.Format = format;
+            return this;
+        }
+
+        public FluentCell FormatLongDate()
+        {
+            Format("yyyy-MM-dd HH:mm:ss");
+            return this;
+        }
+
+        public FluentCell BorderAll(BorderStyle borderStyle)
+        {
+            Style.BorderTop = Style.BorderRight = Style.BorderBottom = Style.BorderLeft = borderStyle;
+            return this;
+        }
+
+        public FluentCell SolidFill(short colorIndex)
+        {
+            Style.FillForegroundColor = colorIndex;
+            Style.FillPattern = NPOI.SS.UserModel.FillPattern.SolidForeground;
             return this;
         }
     }

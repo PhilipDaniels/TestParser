@@ -1,8 +1,8 @@
 ﻿using NPOI.SS.UserModel;
 
-namespace TestParser.Core.XL
+namespace NPOI.SS.FluentExtensions
 {
-    public class FluentStyleDTO
+    public class FluentStyle
     {
         #region Main cell style properties
         public HorizontalAlignment? Alignment { get; set; }
@@ -41,6 +41,13 @@ namespace TestParser.Core.XL
         public FontUnderlineType? Underline { get; set; }
         #endregion
 
+        /// <summary>
+        /// Gets or sets the format, e.g. "0.00%".
+        /// If used, overrides the <see cref="DataFormat"/> property when the style is applied.
+        /// </summary>
+        /// <value>
+        /// The format.
+        /// </value>
         public string Format { get; set; }
 
         public void ApplyStyle(IWorkbook workbook, ICellStyle destination)
@@ -154,7 +161,7 @@ namespace TestParser.Core.XL
         /// <returns>True if the object is equal to this one.</returns>
         public override bool Equals(object value)
         {
-            return Equals((FluentStyleDTO)value);
+            return Equals((FluentStyle)value);
         }
 
         /// <summary>
@@ -162,7 +169,7 @@ namespace TestParser.Core.XL
         /// </summary>
         /// <param name="value">The object to check for equality.</param>
         /// <returns>True if the object is equal to this one.</returns>
-        public bool Equals(FluentStyleDTO value)
+        public bool Equals(FluentStyle value)
         {
             // Use object.ReferenceEquals to avoid infinite loops.
             if (object.ReferenceEquals(value, null))
@@ -214,7 +221,7 @@ namespace TestParser.Core.XL
         /// <param name="first">First object.</param>
         /// <param name="second">Second object.</param>
         /// <returns>True if the two objects are equal.</returns>
-        public static bool operator ==(FluentStyleDTO first, FluentStyleDTO second)
+        public static bool operator ==(FluentStyle first, FluentStyle second)
         {
             // Use object.ReferenceEquals to avoid infinite loops.
             if (object.ReferenceEquals(first, null))
@@ -229,7 +236,7 @@ namespace TestParser.Core.XL
         /// <param name="first">First object.</param>
         /// <param name="second">Second object.</param>
         /// <returns>True if the two objects are equal.</returns>
-        public static bool operator !=(FluentStyleDTO first, FluentStyleDTO second)
+        public static bool operator !=(FluentStyle first, FluentStyle second)
         {
             return !(first == second);
         }

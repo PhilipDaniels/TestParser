@@ -1,4 +1,5 @@
 ﻿using NPOI.HSSF.Util;
+using NPOI.SS.FluentExtensions;
 using NPOI.SS.UserModel;
 
 namespace TestParser.Core.XL
@@ -9,41 +10,50 @@ namespace TestParser.Core.XL
     /// </summary>
     public static class ApplicationPropertyStyling
     {
-        public static FluentStyledCell HeaderStyle(this ICell cell)
+        public static FluentCell HeaderStyle(this ICell cell)
         {
-            var fs = new FluentStyledCell() { Cell = cell, Style = new FluentStyleDTO() };
-            fs.HeaderStyle();
-            return fs;
+            return new FluentCell(cell).HeaderStyle();
         }
 
-        public static FluentStyledCell HeaderStyle(this FluentStyledCell styledCell)
+        public static FluentCell HeaderStyle(this FluentCell cell)
         {
-            return styledCell.SolidFillColor(HSSFColor.Grey25Percent.Index).FontWeight(FontBoldWeight.Bold);
+            return cell.SolidFill(HSSFColor.Grey25Percent.Index)
+                       .FontWeight(FontBoldWeight.Bold);
         }
 
-        public static FluentStyledCell LargeHeaderStyle(this ICell cell)
+        public static FluentCell LargeHeaderStyle(this ICell cell)
         {
-            var fs = new FluentStyledCell() { Cell = cell, Style = new FluentStyleDTO() };
-            fs.LargeHeaderStyle();
-            return fs;
+            return new FluentCell(cell).LargeHeaderStyle();
         }
 
-        public static FluentStyledCell LargeHeaderStyle(this FluentStyledCell styledCell)
+        public static FluentCell LargeHeaderStyle(this FluentCell cell)
         {
-            return styledCell.SolidFillColor(HSSFColor.Grey25Percent.Index).FontWeight(FontBoldWeight.Bold)
-                .Italic(true).FontHeightInPoints(20);
+            return cell.SolidFill(HSSFColor.Grey25Percent.Index)
+                       .FontWeight(FontBoldWeight.Bold)
+                       .Italic(true)
+                       .FontHeightInPoints(20);
         }
 
-        public static FluentStyledCell FormatPercentage(this ICell cell)
+        public static FluentCell SummaryStyle(this ICell cell)
         {
-            var fs = new FluentStyledCell() { Cell = cell, Style = new FluentStyleDTO() };
-            fs.FormatPercentage();
-            return fs;
+            return new FluentCell(cell).SummaryStyle();
         }
 
-        public static FluentStyledCell FormatPercentage(this FluentStyledCell styledCell)
+        public static FluentCell SummaryStyle(this FluentCell cell)
         {
-            return styledCell.Format("0.00%");
+            return cell.SolidFill(HSSFColor.Grey25Percent.Index)
+                       .FontWeight(FontBoldWeight.Bold)
+                       .BorderAll(BorderStyle.Thin);
+        }
+
+        public static FluentCell FormatPercentage(this ICell cell)
+        {
+            return new FluentCell(cell).FormatPercentage();
+        }
+
+        public static FluentCell FormatPercentage(this FluentCell styledCell)
+        {
+            return styledCell.Format("0%");
         }
     }
 }

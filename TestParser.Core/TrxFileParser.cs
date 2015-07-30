@@ -2,13 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace TestParser.Core
 {
+    /// <summary>
+    /// Parses a trx file (as produced by MS Test) and returns a set of <see cref="TestResult"/> objects.
+    /// </summary>
     public class TrxFileParser
     {
+        /// <summary>
+        /// Parses a trx file (as produced by MS Test) and returns a set of <see cref="TestResult"/> objects.
+        /// </summary>
+        /// <param name="trxFilename">The TRX filename.</param>
+        /// <returns>Set of test results.</returns>
+        /// <exception cref="System.IO.FileNotFoundException">The file ' + trxFilename + ' does not exist.</exception>
         public IEnumerable<TestResult> Parse(string trxFilename)
         {
             if (!File.Exists(trxFilename))

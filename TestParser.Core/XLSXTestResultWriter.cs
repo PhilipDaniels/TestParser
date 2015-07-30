@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NPOI.HSSF.Util;
+using NPOI.SS.FluentExtensions;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -27,156 +29,155 @@ namespace TestParser.Core
             workbook.Write(s);
         }
 
-        void CreateSummarySheet(IEnumerable<TestResult> testResults)
+        int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummary> summary)
         {
-            int rowNum = 0;
-            int colNum = 0;
+            int colNum = 0; 
+            int topOfSums = rowNum + 3;
+
             IRow row = summarySheet.CreateRow(rowNum++);
-
-
-            // =============================== Part 1, "Summary By Assembly" ===============================
-            var sba = TestResultSummaryByAssembly.Summarise(testResults);
-
-            SetText(row, 0, "Summary By Assembly").LargeHeaderStyle().ApplyStyle();
+            row.SetCell(0, largeHeaderName).LargeHeaderStyle().ApplyStyle();
             row.HeightInPoints = 30;
+            var range = new CellRangeAddress(row.RowNum, row.RowNum, 0, 6);
+            summarySheet.AddMergedRegion(range);
 
             row = summarySheet.CreateRow(rowNum++);
-            
-            SetText(row, 0, "Assembly").HeaderStyle().ApplyStyle();
-            SetText(row, 1, "Class").HeaderStyle().ApplyStyle();
-            SetText(row, 2, "Time (secs)").HeaderStyle().ApplyStyle();
-            SetText(row, 3, "Percent").HeaderStyle().ApplyStyle();
-            SetText(row, 4, "Total").HeaderStyle().ApplyStyle();
+            row.SetCell(0, "Assembly").HeaderStyle().ApplyStyle();
+            row.SetCell(1, "Class").HeaderStyle().ApplyStyle();
+            row.SetCell(2, "Time (secs)").HeaderStyle().ApplyStyle();
+            row.SetCell(3, "Percent").HeaderStyle().ApplyStyle();
+            row.SetCell(4, "Total").HeaderStyle().ApplyStyle();
             colNum = 5;
-            foreach (var oc in sba.ElementAt(0).Outcomes)
+            foreach (var oc in summary.ElementAt(0).Outcomes)
             {
-                SetText(row, colNum++, oc.Outcome).HeaderStyle().ApplyStyle();
+                row.SetCell(colNum++, oc.Outcome).HeaderStyle().ApplyStyle();
             }
 
-            foreach (var s in sba)
+            foreach (var s in summary)
             {
                 row = summarySheet.CreateRow(rowNum++);
-                SetText(row, 0, s.AssemblyFileName);
-                SetText(row, 1, "n.a.").Alignment(HorizontalAlignment.CenterSelection).ApplyStyle();
-                SetNumber(row, 2, s.TotalDurationInSeconds);
-                SetFormula(row, 3, String.Format("F{0}/E{0}", rowNum)).FormatPercentage().ApplyStyle();
-                SetNumber(row, 4, s.TotalTests);
+                row.SetCell(0, s.AssemblyFileName);
+                row.SetCell(1, s.ClassName);
+                row.SetCell(2, s.TotalDurationInSeconds).Format("0.00").ApplyStyle();
+                row.SetFormula(3, "F{0}/E{0}", rowNum).FormatPercentage().ApplyStyle();
+                row.SetCell(4, s.TotalTests);
 
                 colNum = 5;
                 foreach (var oc in s.Outcomes)
                 {
-                    SetNumber(row, colNum++, oc.NumTests);
+                    var cell = row.SetCell(colNum++, oc.NumTests);
+                    if (oc.Outcome == ResultOutcomeSummary.FailedOutcome && oc.NumTests > 0)
+                        cell.SolidFillColor(HSSFColor.Red.Index).ApplyStyle();
                 }
             }
 
             row = summarySheet.CreateRow(rowNum++);
-            SetFormula(row, 2, String.Format("SUM(C3:C{0})", rowNum - 1)).HeaderStyle().ApplyStyle();
-            SetFormula(row, 3, String.Format("F{0}/E{0}", rowNum)).HeaderStyle().FormatPercentage().ApplyStyle();
-            SetFormula(row, 4, String.Format("SUM(E3:E{0})", rowNum - 1)).HeaderStyle().ApplyStyle();
-            int maxCol = 5 + sba.ElementAt(0).Outcomes.Count();
+            row.SetFormula(2, "SUM(C{0}:C{1})", topOfSums, rowNum - 1).SummaryStyle().Format("0.00").ApplyStyle();
+            row.SetFormula(3, "F{0}/E{0}", rowNum).SummaryStyle().FormatPercentage().ApplyStyle();
+            row.SetFormula(4, "SUM(E{0}:E{1})", topOfSums, rowNum - 1).SummaryStyle().ApplyStyle();
+            int maxCol = 5 + summary.ElementAt(0).Outcomes.Count();
             for (int cn = 5; cn < maxCol; cn++)
             {
                 string colRef = CellReference.ConvertNumToColString(cn);
-                SetFormula(row, cn, String.Format("SUM({0}3:{0}{1})", colRef, rowNum - 1)).HeaderStyle().ApplyStyle();
+                row.SetFormula(cn, "SUM({1}{0}:{1}{2})", topOfSums, colRef, rowNum - 1).SummaryStyle().ApplyStyle();
             }
 
-           
-            // =============================== Part 2, "Summary By Class" ===============================
-
-
-
-            // =============================== Part 3, "Failing Tests" ===============================
-            //SetLargeHeader(row, 0, "Summary By Class");
-
-            for (colNum = 0; colNum < 10; colNum++)
-                summarySheet.AutoSizeColumn(colNum);
+            return rowNum;
         }
 
+        void CreateSummarySheet(IEnumerable<TestResult> testResults)
+        {
+            var sba = TestResultSummary.SummariseByAssembly(testResults);
+            int rowNum = CreateSummary("Summary By Assembly", 0, sba);
+
+            var sbc = TestResultSummary.SummariseByClass(testResults);
+            rowNum++;
+            rowNum = CreateSummary("Summary By Class", rowNum, sbc);
+
+            // Set the widths.
+            summarySheet.SetColumnWidth(0, 10000);
+            summarySheet.SetColumnWidth(1, 10000);
+            summarySheet.SetColumnWidth(2, 3000);
+            summarySheet.SetColumnWidth(3, 2500);
+            for (int colNum = 4; colNum <= 4 + sba.ElementAt(0).Outcomes.Count(); colNum++)
+                summarySheet.SetColumnWidth(colNum, 2500);
+        }
 
         void CreateResultsSheet(IEnumerable<TestResult> testResults)
         {
-            const int ColResultsPathName = 0;
-            const int ColResultsFileName = 1;
-            const int ColAssemblyPathName = 2;
-            const int ColAssemblyFileName = 3;
-            const int ColFullClassName = 4;
-            const int ColClassName = 5;
-            const int ColTestName = 6;
-            const int ColComputerName = 7;
-            const int ColStartTime = 8;
-            const int ColEndTime = 9;
-            const int ColDuration = 10;
-            const int ColDurationInSeconds = 11;
-            const int ColOutcome = 12;
-            const int ColErrorMessage = 13;
-            const int ColStackTrace = 14;
+            const int ColAssemblyFileName = 0;
+            const int ColClassName = 1;
+            const int ColTestName = 2;
+            const int ColOutcome = 3;
+            const int ColDurationInSeconds = 4;
+            const int ColErrorMessage = 5;
+            const int ColStackTrace = 6;
+            const int ColStartTime = 7;
+            const int ColEndTime = 8;
+            const int ColDuration = 9;
+            const int ColResultsPathName = 10;
+            const int ColResultsFileName = 11;
+            const int ColAssemblyPathName = 12;
+            const int ColFullClassName = 13;
+            const int ColComputerName = 14;
+            
 
             IRow row = resultsSheet.CreateRow(0);
-            //SetHeader(row, ColResultsPathName, "ResultsPathName");
-            //SetHeader(row, ColResultsFileName, "ResultsFileName");
-            //SetHeader(row, ColAssemblyPathName, "AssemblyPathName");
-            //SetHeader(row, ColAssemblyFileName, "AssemblyFileName");
-            //SetHeader(row, ColFullClassName, "FullClassName");
-            //SetHeader(row, ColClassName, "ClassName");
-            //SetHeader(row, ColTestName, "TestName");
-            //SetHeader(row, ColComputerName, "ComputerName");
-            //SetHeader(row, ColStartTime, "StartTime");
-            //SetHeader(row, ColEndTime, "EndTime");
-            //SetHeader(row, ColDuration, "Duration");
-            //SetHeader(row, ColDurationInSeconds, "DurationInSeconds");
-            //SetHeader(row, ColOutcome, "Outcome");
-            //SetHeader(row, ColErrorMessage, "ErrorMessage");
-            //SetHeader(row, ColStackTrace, "StackTrace");
+            row.SetCell(ColResultsPathName, "ResultsPathName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColResultsFileName, "ResultsFileName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColAssemblyPathName, "AssemblyPathName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColAssemblyFileName, "AssemblyFileName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColFullClassName, "FullClassName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColClassName, "ClassName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColTestName, "TestName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColComputerName, "ComputerName").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColStartTime, "StartTime").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColEndTime, "EndTime").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColDuration, "Duration").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColDurationInSeconds, "DurationInSeconds").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColOutcome, "Outcome").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColErrorMessage, "ErrorMessage").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColStackTrace, "StackTrace").HeaderStyle().ApplyStyle(); ;
 
             int i = 1;
             foreach (var r in testResults)
             {
                 row = resultsSheet.CreateRow(i);
-                SetText(row, ColResultsPathName, r.ResultsPathName);
-                SetText(row, ColResultsFileName, r.ResultsFileName);
-                SetText(row, ColAssemblyPathName, r.AssemblyPathName);
-                SetText(row, ColAssemblyFileName, r.AssemblyFileName);
-                SetText(row, ColFullClassName, r.FullClassName);
-                SetText(row, ColClassName, r.ClassName);
-                SetText(row, ColTestName, r.TestName);
-                SetText(row, ColComputerName, r.ComputerName);
-                SetDate(row, ColStartTime, r.StartTime);
-                SetDate(row, ColEndTime, r.StartTime);
-                SetText(row, ColDuration, r.Duration.ToString("c"));
-                SetNumber(row, ColDurationInSeconds, r.DurationInSeconds);
-                SetText(row, ColOutcome, r.Outcome);
-                SetText(row, ColErrorMessage, r.ErrorMessage);
-                SetText(row, ColStackTrace, r.StackTrace);
+                row.SetCell(ColResultsPathName, r.ResultsPathName);
+                row.SetCell(ColResultsFileName, r.ResultsFileName);
+                row.SetCell(ColAssemblyPathName, r.AssemblyPathName);
+                row.SetCell(ColAssemblyFileName, r.AssemblyFileName);
+                row.SetCell(ColFullClassName, r.FullClassName);
+                row.SetCell(ColClassName, r.ClassName);
+                row.SetCell(ColTestName, r.TestName);
+                row.SetCell(ColComputerName, r.ComputerName);
+                row.SetCell(ColStartTime, r.StartTime).FormatLongDate().ApplyStyle();
+                row.SetCell(ColEndTime, r.StartTime).FormatLongDate().ApplyStyle();
+                row.SetCell(ColDuration, r.Duration.ToString("c")).Alignment(HorizontalAlignment.Right).ApplyStyle();
+                row.SetCell(ColDurationInSeconds, r.DurationInSeconds).Format("0.00").ApplyStyle();
+                row.SetCell(ColOutcome, r.Outcome);
+                row.SetCell(ColErrorMessage, r.ErrorMessage);
+                row.SetCell(ColStackTrace, r.StackTrace);
 
                 i++;
             }
 
             // Freeze the header row.
             resultsSheet.CreateFreezePane(0, 1, 0, 1);
+
+            // Set the widths.
+            resultsSheet.SetColumnWidth(0, 10000);
+            resultsSheet.SetColumnWidth(1, 10000);
+            resultsSheet.SetColumnWidth(2, 10000);
+            resultsSheet.SetColumnWidth(3, 3000);
+            resultsSheet.SetColumnWidth(4, 3000);
+            resultsSheet.SetColumnWidth(5, 3000);
+            resultsSheet.SetColumnWidth(6, 3000);
+            resultsSheet.SetColumnWidth(7, 5500);
+            resultsSheet.SetColumnWidth(8, 5500);
+            resultsSheet.SetColumnWidth(9, 5500);
         }
 
-        ICell SetText(IRow row, int column, string text)
-        {
-            var cell = row.CreateCell(column);
-            cell.SetCellValue(text);
-            return cell;
-        }
-
-        ICell SetDate(IRow row, int column, DateTime date)
-        {
-            var cell = row.CreateCell(column);
-            cell.SetCellValue(date);
-            cell.CellStyle = DateStyle;
-            return cell;
-        }
-
-        ICell SetNumber(IRow row, int column, double number)
-        {
-            var cell = row.CreateCell(column);
-            cell.SetCellValue(number);
-            return cell;
-        }
-
+        /*
         ICell SetPercent(IRow row, int column, double number)
         {
             var cell = row.CreateCell(column);
@@ -190,47 +191,6 @@ namespace TestParser.Core
 
             return cell;
         }
-
-
-
-        ICell SetFormula(IRow row, int column, string formula)
-        {
-            var cell = row.CreateCell(column);
-            cell.SetCellFormula(formula);
-            return cell;
-        }
-
-
-
-        ICellStyle DateStyle
-        {
-            get
-            {
-                if (dateStyle == null)
-                {
-                    dateStyle = workbook.CreateCellStyle();
-                    IDataFormat dataFormat = workbook.CreateDataFormat();
-                    dateStyle.DataFormat = dataFormat.GetFormat("yyyy-MM-dd HH:mm:ss");
-                }
-
-                return dateStyle;
-            }
-        }
-        ICellStyle dateStyle;
-
-        short PercentFormat
-        {
-            get
-            {
-                if (percentFormat == null)
-                { 
-                    percentFormat = workbook.CreateDataFormat().GetFormat("0.00%");
-                }
-
-                return percentFormat.Value;
-            }
-        }
-        short? percentFormat;
 
         ICellStyle PercentGreenStyle
         {
@@ -282,5 +242,6 @@ namespace TestParser.Core
             }
         }
         ICellStyle percentRedStyle;
+        */
     }
 }
