@@ -41,20 +41,6 @@ namespace TestParser.Core
 
                 writer.WriteResults(s, results);
             }
-
-            //StreamWriter sw = null;
-            //if (outputFilename == null)
-            //{
-            //    sw = new StreamWriter(Console.OpenStandardOutput());
-            //    sw.AutoFlush = true;
-            //    Console.SetOut(sw);
-            //}
-            //else
-            //{
-            //    sw = new StreamWriter(outputFilename, false, Encoding.UTF8);
-            //}
-
-            //sw.Write("hello world");
         }
     }
 }

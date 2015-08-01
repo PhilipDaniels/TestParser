@@ -71,7 +71,7 @@ namespace TestParser.Core
             row.SetCell(ColTestResultFileType, "TestResultFileType").HeaderStyle().ApplyStyle();
 
             int i = 1;
-            foreach (var r in testResults)
+            foreach (var r in GetSortedResults(testResults))
             {
                 row = resultsSheet.CreateRow(i);
                 row.SetCell(ColResultsPathName, r.ResultsPathName);
@@ -111,6 +111,28 @@ namespace TestParser.Core
             string range = String.Format("D2:D{0}", i);
             var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
             resultsSheetConditionalFormatting.AddConditionalFormatting(region, ResultOutcomeFormattingRules);
+        }
+
+        /// <summary>
+        /// Sort the results so that they are ordered: "Failures, NonPassed, Passed".
+        /// </summary>
+        /// <param name="testResults">The test results.</param>
+        /// <returns>Ordered results.</returns>
+        IEnumerable<TestResult> GetSortedResults(IEnumerable<TestResult> testResults)
+        {
+            var decoratedResults = (from tr in testResults
+                                    select new
+                                    {
+                                        SortGroup = tr.Outcome == KnownOutcomes.Passed ? 2 :
+                                                    tr.Outcome == KnownOutcomes.Failed ? 0 : 1,
+                                        Result = tr
+                                    }).OrderBy(dr => dr.SortGroup).
+                                     ThenBy(dr => dr.Result.ResultsPathName).
+                                     ThenBy(dr => dr.Result.AssemblyPathName).
+                                     ThenBy(dr => dr.Result.ClassName).
+                                     ThenBy(dr => dr.Result.TestName);
+
+            return decoratedResults.Select(dr => dr.Result);
         }
 
         void CreateSummarySheet(IEnumerable<TestResult> testResults)
