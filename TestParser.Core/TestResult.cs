@@ -12,6 +12,14 @@ namespace TestParser.Core
     public class TestResult : TestResultBase
     {
         /// <summary>
+        /// Gets or sets the type of the test result file.
+        /// </summary>
+        /// <value>
+        /// The type of the test result file.
+        /// </value>
+        public TestResultFileType TestResultFileType { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the results path.
         /// </summary>
         /// <value>
@@ -41,7 +49,7 @@ namespace TestParser.Core
         /// <value>
         /// The start time.
         /// </value>
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime { get; set; }
 
         /// <summary>
         /// Gets or sets the end time of the test. UTC.
@@ -49,7 +57,15 @@ namespace TestParser.Core
         /// <value>
         /// The end time.
         /// </value>
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the duration in seconds.
+        /// </summary>
+        /// <value>
+        /// The duration in seconds.
+        /// </value>
+        public double DurationInSeconds { get; set; }
 
         /// <summary>
         /// Gets or sets the outcome. The outcomes "Passed" and "Failed"
@@ -88,8 +104,6 @@ namespace TestParser.Core
             FullClassName = "";
             TestName = "";
             ComputerName = "";
-            StartTime = DateTime.MinValue;
-            EndTime = DateTime.MinValue;
             Outcome = "";
             ErrorMessage = "";
             StackTrace = "";
@@ -109,35 +123,6 @@ namespace TestParser.Core
                     return "";
                 else
                     return Path.GetFileName(ResultsPathName);
-            }
-        }
-
-        /// <summary>
-        /// Gets the duration of the test, which is the difference between
-        /// the <see cref="EndTime"/> and the <see cref="StartTime"/>.
-        /// </summary>
-        /// <value>
-        /// The duration.
-        /// </value>
-        public TimeSpan Duration
-        {
-            get
-            {
-                return EndTime - StartTime;
-            }
-        }
-
-        /// <summary>
-        /// Gets the duration in seconds.
-        /// </summary>
-        /// <value>
-        /// The duration in seconds.
-        /// </value>
-        public double DurationInSeconds
-        {
-            get
-            {
-                return Duration.TotalSeconds;
             }
         }
     }

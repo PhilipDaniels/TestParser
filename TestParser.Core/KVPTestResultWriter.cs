@@ -23,13 +23,19 @@ namespace TestParser.Core
                     sw.Write(" ClassName=" + Quoter.KVPQuote(r.ClassName));
                     sw.Write(" TestName=" + Quoter.KVPQuote(r.TestName));
                     sw.Write(" ComputerName=" + Quoter.KVPQuote(r.ComputerName));
-                    sw.Write(" StartTime=" + Quoter.KVPQuote(r.StartTime.ToString("s")));
-                    sw.Write(" EndTime=" + Quoter.KVPQuote(r.EndTime.ToString("s")));
-                    sw.Write(" Duration=" + Quoter.KVPQuote(r.Duration.ToString("c")));
+                    if (r.StartTime != null)
+                        sw.Write(" StartTime=" + Quoter.KVPQuote(r.StartTime.Value.ToString("s")));
+                    else
+                        sw.Write(" StartTime=");
+                    if (r.EndTime != null)
+                        sw.Write(" EndTime=" + Quoter.KVPQuote(r.EndTime.Value.ToString("s")));
+                    else
+                        sw.Write(" EndTime=");
                     sw.Write(" DurationInSeconds=" + Quoter.KVPQuote(r.DurationInSeconds.ToString("R", CultureInfo.InvariantCulture)));
                     sw.Write(" Outcome=" + Quoter.KVPQuote(r.Outcome));
                     sw.Write(" ErrorMessage=" + Quoter.KVPQuote(r.ErrorMessage));
                     sw.Write(" StackTrace=" + Quoter.KVPQuote(r.StackTrace));
+                    sw.Write(" TestResultFileType=" + Quoter.KVPQuote(r.TestResultFileType.ToString()));
                     sw.WriteLine();
                 }
             }

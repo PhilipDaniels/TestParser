@@ -30,6 +30,9 @@ namespace TestParser.Core
             CreateSummarySheet(testResults);
 
             workbook.Write(s);
+
+            // Handy check to see caching is working.
+            int numStylesCreated = FluentCell.NumCachedStyles;
         }
 
         void CreateResultsSheet(IEnumerable<TestResult> testResults)
@@ -43,13 +46,12 @@ namespace TestParser.Core
             const int ColStackTrace = 6;
             const int ColStartTime = 7;
             const int ColEndTime = 8;
-            const int ColDuration = 9;
-            const int ColResultsPathName = 10;
-            const int ColResultsFileName = 11;
-            const int ColAssemblyPathName = 12;
-            const int ColFullClassName = 13;
-            const int ColComputerName = 14;
-
+            const int ColResultsPathName = 9;
+            const int ColResultsFileName = 10;
+            const int ColAssemblyPathName = 11;
+            const int ColFullClassName = 12;
+            const int ColComputerName = 13;
+            const int ColTestResultFileType = 14;
 
             IRow row = resultsSheet.CreateRow(0);
             row.SetCell(ColResultsPathName, "ResultsPathName").HeaderStyle().ApplyStyle(); ;
@@ -62,11 +64,11 @@ namespace TestParser.Core
             row.SetCell(ColComputerName, "ComputerName").HeaderStyle().ApplyStyle(); ;
             row.SetCell(ColStartTime, "StartTime").HeaderStyle().ApplyStyle(); ;
             row.SetCell(ColEndTime, "EndTime").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColDuration, "Duration").HeaderStyle().ApplyStyle(); ;
             row.SetCell(ColDurationInSeconds, "DurationInSeconds").HeaderStyle().ApplyStyle(); ;
             row.SetCell(ColOutcome, "Outcome").HeaderStyle().ApplyStyle(); ;
             row.SetCell(ColErrorMessage, "ErrorMessage").HeaderStyle().ApplyStyle(); ;
             row.SetCell(ColStackTrace, "StackTrace").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColTestResultFileType, "TestResultFileType").HeaderStyle().ApplyStyle();
 
             int i = 1;
             foreach (var r in testResults)
@@ -80,13 +82,15 @@ namespace TestParser.Core
                 row.SetCell(ColClassName, r.ClassName);
                 row.SetCell(ColTestName, r.TestName);
                 row.SetCell(ColComputerName, r.ComputerName);
-                row.SetCell(ColStartTime, r.StartTime).FormatLongDate().ApplyStyle();
-                row.SetCell(ColEndTime, r.StartTime).FormatLongDate().ApplyStyle();
-                row.SetCell(ColDuration, r.Duration.ToString("c")).Alignment(HorizontalAlignment.Right).ApplyStyle();
+                if (r.StartTime != null)
+                    row.SetCell(ColStartTime, r.StartTime.Value).FormatLongDate().ApplyStyle();
+                if (r.EndTime != null)
+                    row.SetCell(ColEndTime, r.EndTime.Value).FormatLongDate().ApplyStyle();
                 row.SetCell(ColDurationInSeconds, r.DurationInSeconds).Format("0.00").ApplyStyle();
                 row.SetCell(ColOutcome, r.Outcome);
                 row.SetCell(ColErrorMessage, r.ErrorMessage);
                 row.SetCell(ColStackTrace, r.StackTrace);
+                row.SetCell(ColTestResultFileType, r.TestResultFileType.ToString());
 
                 i++;
             }
@@ -103,7 +107,6 @@ namespace TestParser.Core
             resultsSheet.SetColumnWidth(ColStackTrace, 3000);
             resultsSheet.SetColumnWidth(ColStartTime, 5500);
             resultsSheet.SetColumnWidth(ColEndTime, 5500);
-            resultsSheet.SetColumnWidth(ColDuration, 5500);
 
             string range = String.Format("D2:D{0}", i);
             var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
@@ -120,12 +123,12 @@ namespace TestParser.Core
             rowNum = CreateSummary("Summary By Class", rowNum, sbc);
 
             // Set the widths.
-            summarySheet.SetColumnWidth(0, 10000);
-            summarySheet.SetColumnWidth(1, 10000);
+            summarySheet.SetColumnWidth(0, 12000);
+            summarySheet.SetColumnWidth(1, 12000);
             summarySheet.SetColumnWidth(2, 3000);
             summarySheet.SetColumnWidth(3, 2500);
             for (int colNum = 4; colNum <= 4 + sba.ElementAt(0).Outcomes.Count(); colNum++)
-                summarySheet.SetColumnWidth(colNum, 2500);
+                summarySheet.SetColumnWidth(colNum, 3000);
         }
 
         int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummary> summary)

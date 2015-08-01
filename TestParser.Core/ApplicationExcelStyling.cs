@@ -53,7 +53,7 @@ namespace TestParser.Core
 
         public static FluentCell FormatPercentage(this FluentCell styledCell)
         {
-            return styledCell.Format("0%");
+            return styledCell.Format("0.00%");
         }
     }
 }

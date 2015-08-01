@@ -12,6 +12,14 @@ namespace NPOI.SS.FluentExtensions
             cachedWorkbookStyles = new Dictionary<int, ICellStyle>();
         }
 
+        public static int NumCachedStyles
+        {
+            get
+            {
+                return cachedWorkbookStyles.Count;
+            }
+        }
+
         public FluentCell(ICell cell)
         {
             Cell = cell;

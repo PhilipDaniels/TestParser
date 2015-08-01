@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using BassUtils;
 
 namespace TestParser.Core
 {
     /// <summary>
     /// Parses a trx file (as produced by MS Test) and returns a set of <see cref="TestResult"/> objects.
     /// </summary>
-    public class TrxFileParser
+    public class TrxFileParser : ITestFileParser
     {
         /// <summary>
         /// Parses a trx file (as produced by MS Test) and returns a set of <see cref="TestResult"/> objects.
         /// </summary>
-        /// <param name="trxFilename">The TRX filename.</param>
+        /// <param name="filename">The filename.</param>
         /// <returns>Set of test results.</returns>
-        /// <exception cref="System.IO.FileNotFoundException">The file ' + trxFilename + ' does not exist.</exception>
-        public IEnumerable<TestResult> Parse(string trxFilename)
+        /// <exception cref="System.IO.FileNotFoundException">The file ' + filename + ' does not exist.</exception>
+        public IEnumerable<TestResult> Parse(string filename)
         {
-            if (!File.Exists(trxFilename))
-                throw new FileNotFoundException("The file '" + trxFilename + "' does not exist.", trxFilename);
+            filename.ThrowIfFileDoesNotExist("filename");
 
             XNamespace ns = @"http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
-            var doc = XDocument.Load(trxFilename);
+            var doc = XDocument.Load(filename);
 
             var testDefinitions = (from unitTest in doc.Descendants(ns + "UnitTest")
                          select new
@@ -40,18 +39,22 @@ namespace TestParser.Core
                            let executionId = utr.Attribute("executionId").Value
                            let message = utr.Descendants(ns + "Message").FirstOrDefault()
                            let stackTrace = utr.Descendants(ns + "StackTrace").FirstOrDefault()
+                           let st = DateTime.Parse(utr.Attribute("startTime").Value).ToUniversalTime()
+                           let et = DateTime.Parse(utr.Attribute("endTime").Value).ToUniversalTime()
                            select new TestResult()
                            {
-                               ResultsPathName = trxFilename,
+                               TestResultFileType = Core.TestResultFileType.Trx,
+                               ResultsPathName = filename,
                                AssemblyPathName = (from td in testDefinitions where td.executionId == executionId select td.codeBase).Single(),
                                FullClassName = (from td in testDefinitions where td.executionId == executionId select td.className).Single(),
                                ComputerName = utr.Attribute("computerName").Value,
-                               StartTime = DateTime.Parse(utr.Attribute("startTime").Value).ToUniversalTime(),
-                               EndTime = DateTime.Parse(utr.Attribute("endTime").Value).ToUniversalTime(),
+                               StartTime = st,
+                               EndTime = et,
                                Outcome = utr.Attribute("outcome").Value,
                                TestName = utr.Attribute("testName").Value,
                                ErrorMessage = message == null ? "" : message.Value,
-                               StackTrace = stackTrace == null ? "" : stackTrace.Value
+                               StackTrace = stackTrace == null ? "" : stackTrace.Value,
+                               DurationInSeconds = (et - st).TotalSeconds
                            }
                            ).OrderBy(r => r.ResultsPathName).
                              ThenBy(r => r.AssemblyPathName).

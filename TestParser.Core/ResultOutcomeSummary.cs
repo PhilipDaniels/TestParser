@@ -56,6 +56,7 @@ namespace TestParser.Core
                     remainingOutcomes.Add(oc);
             }
 
+            remainingOutcomes.Sort();
             finalOutcomes.AddRange(remainingOutcomes);
 
             return finalOutcomes;

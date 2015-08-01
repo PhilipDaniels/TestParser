@@ -17,7 +17,7 @@ namespace TestParser
                 }
 
                 var resultsFactory = new TestResultFactory();
-                var results = resultsFactory.CreateFromTestFiles(cla.TestFiles);
+                var results = resultsFactory.CreateResultsFromTestFiles(cla.TestFiles);
 
                 var outputCreator = new TestResultOutputter();
                 outputCreator.OutputResults(results, cla.OutputFilename, cla.OutputFormat);

@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TestParser.Core
 {
+    /// <summary>
+    /// Passes each test file to an appropriate parser and accumulates a list
+    /// of all the <see cref="TestResult"/> objects it can gather.
+    /// </summary>
     public class TestResultFactory
     {
         readonly TrxFileParser trxFileParser;
-        readonly NUnitFileParser nunitFileParser;
+        readonly NUnit2FileParser nunit2FileParser;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestResultFactory"/> class.
+        /// </summary>
         public TestResultFactory()
         {
             trxFileParser = new TrxFileParser();
-            nunitFileParser = new NUnitFileParser();
+            nunit2FileParser = new NUnit2FileParser();
         }
 
-        public IEnumerable<TestResult> CreateFromTestFiles(IEnumerable<string> testFileNames)
+        /// <summary>
+        /// Creates a set of <see cref="TestResult"/> objects from test files.
+        /// </summary>
+        /// <param name="testFileNames">The test file names.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception">Unhandled fileType  + fileType</exception>
+        public IEnumerable<TestResult> CreateResultsFromTestFiles(IEnumerable<string> testFileNames)
         {
             var results = new List<TestResult>();
             foreach (string file in testFileNames)
@@ -28,7 +39,8 @@ namespace TestParser.Core
                     case TestResultFileType.Trx:
                         results.AddRange(trxFileParser.Parse(file));
                         break;
-                    case TestResultFileType.NUnit:
+                    case TestResultFileType.NUnit2:
+                        results.AddRange(nunit2FileParser.Parse(file));
                         break;
                     default:
                         throw new Exception("Unhandled fileType " + fileType);

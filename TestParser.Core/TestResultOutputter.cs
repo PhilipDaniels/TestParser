@@ -5,7 +5,7 @@ using System.IO;
 namespace TestParser.Core
 {
     /// <summary>
-    /// Simple wrapper class to generate the appropriate type of result file.
+    /// Simple wrapper class to generate the appropriate type of result stream.
     /// </summary>
     public class TestResultOutputter
     {

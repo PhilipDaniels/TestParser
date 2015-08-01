@@ -11,8 +11,13 @@
         Trx,
 
         /// <summary>
-        /// The NUnit file type, as produced by, er, NUnit.
+        /// The NUnit 2 file type, as produced by, er, NUnit 2.
         /// </summary>
-        NUnit
+        NUnit2,
+
+            /// <summary>
+        /// The NUnit 3 file type, as produced by, er, NUnit 3.
+        /// </summary>
+        NUnit3
     }
 }
