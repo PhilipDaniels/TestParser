@@ -63,10 +63,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineArguments.cs" />
     <Compile Include="KnownOutcomes.cs" />
+    <Compile Include="NUnitFileParser.cs" />
+    <Compile Include="TestResultFileType.cs" />
+    <Compile Include="TestResultFileTypeGuesser.cs" />
+    <Compile Include="TestResultOutputter.cs" />
     <Compile Include="Quoter.cs" />
     <Compile Include="ResultOutcomeSummary.cs" />
     <Compile Include="TestResultBase.cs" />
+    <Compile Include="TestResultFactory.cs" />
     <Compile Include="TestResultSummary.cs" />
     <Compile Include="XLSXTestResultWriter.cs" />
     <Compile Include="KVPTestResultWriter.cs" />
@@ -79,7 +85,7 @@
     <Compile Include="TestResult.cs" />
     <Compile Include="TestFileFinder.cs" />
     <Compile Include="TrxFileParser.cs" />
-    <Compile Include="XL\ApplicationPropertyStyling.cs" />
+    <Compile Include="ApplicationExcelStyling.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

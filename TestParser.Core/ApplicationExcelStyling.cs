@@ -2,13 +2,13 @@
 using NPOI.SS.FluentExtensions;
 using NPOI.SS.UserModel;
 
-namespace TestParser.Core.XL
+namespace TestParser.Core
 {
     /// <summary>
     /// The highest level of property styling, where we establish styles
     /// that are specific to our application.
     /// </summary>
-    public static class ApplicationPropertyStyling
+    public static class ApplicationExcelStyling
     {
         public static FluentCell HeaderStyle(this ICell cell)
         {
