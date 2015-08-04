@@ -147,7 +147,7 @@ namespace TestParser.Core
 
             sb.AppendLine("Usage");
             sb.AppendLine("=====");
-            sb.AppendLine("TestParser.exe [/of:<filename> | /fmt:<format>] <inputfiles>");
+            sb.AppendLine("TestParser.exe [/of:<filename> | /fmt:<format>] <testfiles>");
             sb.AppendLine("");
             sb.AppendLine("If /fmt is specified, output is written to stdout. Valid formats");
             sb.AppendLine("are json, csv, kvp and xlsx.");
@@ -155,6 +155,19 @@ namespace TestParser.Core
             sb.AppendLine("If /of is specified, output is written to a file and the format");
             sb.AppendLine("of the file is inferred from the extension. Valid extensions are");
             sb.AppendLine("the same as the /fmt argument.");
+            sb.AppendLine("");
+            sb.AppendLine("File globs may be used to specify <testfiles>, for example");
+            sb.AppendLine(@"'**\*.trx' will find all MS Test files in this directory and");
+            sb.AppendLine("any child directories. Both MS Test and NUnit2 files can be");
+            sb.AppendLine("specified in the same invocation, TestParser will guess the file");
+            sb.AppendLine("type automatically and unify the results.");
+            sb.AppendLine("");
+            sb.AppendLine("Examples");
+            sb.AppendLine("========");
+            sb.AppendLine("");
+            sb.AppendLine(@"TestParser.exe /of:C:\temp\results.xlsx **\*.trx ..\**\NUnitResults\*.xml");
+            sb.AppendLine(@"TestParser.exe /fmt:csv foo.trx");
+            sb.AppendLine(@"TestParser.exe /of:C:\temp\results.json C:\bin\foo.trx C:\bin\bar.xml");
 
             return sb.ToString();
         }

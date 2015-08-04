@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F3DEFDE2-0A47-42A4-B100-F3A617F49B41}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI.SS.FluentExtensions", "NPOI.SS.FluentExtensions\NPOI.SS.FluentExtensions.csproj", "{2546412D-E22E-4608-A272-28B8916CAB72}"
