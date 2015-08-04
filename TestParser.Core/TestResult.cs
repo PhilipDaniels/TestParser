@@ -8,7 +8,7 @@ namespace TestParser.Core
     /// Represents the result of running a single test.
     /// Created based on the trx output format of MS Test.
     /// </summary>
-    [DebuggerDisplay("{TestName}")]
+    [DebuggerDisplay("{TestName}={Outcome}")]
     public class TestResult : TestResultBase
     {
         /// <summary>

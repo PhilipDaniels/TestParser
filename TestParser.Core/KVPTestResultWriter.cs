@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -7,13 +6,13 @@ namespace TestParser.Core
 {
     public class KVPTestResultWriter : ITestResultWriter
     {
-        public void WriteResults(Stream s, IEnumerable<TestResult> testResults)
+        public void WriteResults(Stream s, TestResults testResults)
         {
             var utf8WithoutBom = new UTF8Encoding(false);
 
             using (var sw = new StreamWriter(s, utf8WithoutBom))
             {
-                foreach (var r in testResults)
+                foreach (var r in testResults.Lines.SortedByFailedOtherPassed)
                 {
                     sw.Write(" ResultsPathName=" + Quoter.KVPQuote(r.ResultsPathName));
                     sw.Write(" ResultsFileName=" + Quoter.KVPQuote(r.ResultsFileName));

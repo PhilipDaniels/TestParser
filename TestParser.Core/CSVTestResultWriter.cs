@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -7,7 +6,7 @@ namespace TestParser.Core
 {
     public class CSVTestResultWriter : ITestResultWriter
     {
-        public void WriteResults(Stream s, IEnumerable<TestResult> testResults)
+        public void WriteResults(Stream s, TestResults testResults)
         {
             var utf8WithoutBom = new UTF8Encoding(false);
 
@@ -31,7 +30,7 @@ namespace TestParser.Core
                 sw.Write("TestResultFileType");
                 sw.WriteLine();
 
-                foreach (var r in testResults)
+                foreach (var r in testResults.Lines.SortedByFailedOtherPassed)
                 {
                     sw.Write(Quoter.CSVQuote(r.ResultsPathName)); sw.Write(",");
                     sw.Write(Quoter.CSVQuote(r.ResultsFileName)); sw.Write(",");

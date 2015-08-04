@@ -1,33 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using BassUtils;
 
 namespace TestParser.Core
 {
-    /// <summary>
-    /// A simple class to summarise a set of <see cref="TestResult"/>.
-    /// </summary>
-    [DebuggerDisplay("{AssemblyFileName}, Passed={TotalPassed}/{TotalTests} in {TotalDurationInSeconds} secs.")]
-    public class TestResultSummaryLine : TestResultBase
+    public class TestResultSummary
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TestResultSummaryLine"/> class.
-        /// </summary>
-        public TestResultSummaryLine()
+        private readonly List<TestResultSummaryLine> lines;
+
+        public IEnumerable<TestResultSummaryLine> Lines { get { return lines; } }
+
+        public TestResultSummary()
         {
-            Outcomes = new List<ResultOutcomeSummary>();
+            lines = new List<TestResultSummaryLine>();
         }
 
-        /// <summary>
-        /// The outcomes. The well-known outcomes "Passed" and "Failed" will always be
-        /// there, and always the first two outcomes. The other outcomes, if any, come
-        /// after that.
-        /// </summary>
-        /// <value>
-        /// The outcomes.
-        /// </value>
-        public List<ResultOutcomeSummary> Outcomes { get; private set; }
+        public void Add(TestResultSummaryLine summaryLine)
+        {
+            summaryLine.ThrowIfNull("summaryLine");
+
+            lines.Add(summaryLine);
+        }
 
         /// <summary>
         /// Gets the total number of tests in this summary line.
@@ -39,7 +32,7 @@ namespace TestParser.Core
         {
             get
             {
-                return Outcomes.Sum(c => c.NumTests);
+                return Lines.Sum(c => c.TotalTests);
             }
         }
 
@@ -53,7 +46,7 @@ namespace TestParser.Core
         {
             get
             {
-                return TotalByOutcome(KnownOutcomes.Passed);
+                return Lines.Sum(c => c.TotalPassed);
             }
         }
 
@@ -66,7 +59,7 @@ namespace TestParser.Core
         {
             outcome.ThrowIfNull("outcome");
 
-            return Outcomes.Where(c => c.Outcome == outcome).Single().NumTests;
+            return Lines.Sum(c => c.TotalByOutcome(outcome));
         }
 
         /// <summary>
@@ -87,16 +80,16 @@ namespace TestParser.Core
         }
 
         /// <summary>
-        /// Gets the total duration in seconds in this summary line.
+        /// Gets the total duration in seconds of this summary set.
         /// </summary>
         /// <value>
-        /// The total duration in seconds in this summary line.
+        /// The total duration in seconds of this summary set.
         /// </value>
         public double TotalDurationInSeconds
         {
             get
             {
-                return Outcomes.Sum(c => c.TotalDurationInSeconds);
+                return Lines.Sum(c => c.TotalDurationInSeconds);
             }
         }
     }

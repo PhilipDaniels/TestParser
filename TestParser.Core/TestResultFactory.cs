@@ -27,9 +27,10 @@ namespace TestParser.Core
         /// <param name="testFileNames">The test file names.</param>
         /// <returns></returns>
         /// <exception cref="System.Exception">Unhandled fileType  + fileType</exception>
-        public IEnumerable<TestResult> CreateResultsFromTestFiles(IEnumerable<string> testFileNames)
+        public TestResults CreateResultsFromTestFiles(IEnumerable<string> testFileNames)
         {
-            var results = new List<TestResult>();
+            var results = new TestResults();
+
             foreach (string file in testFileNames)
             {
                 var fileType = TestResultFileTypeGuesser.GuessFileType(file);
@@ -46,6 +47,8 @@ namespace TestParser.Core
                         throw new Exception("Unhandled fileType " + fileType);
                 }
             }
+
+            results.Summarise();
 
             return results;
         }

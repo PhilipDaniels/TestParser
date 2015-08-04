@@ -18,7 +18,7 @@ namespace TestParser.Core
         ISheetConditionalFormatting summarySheetConditionalFormatting;
         ISheetConditionalFormatting resultsSheetConditionalFormatting;
 
-        public void WriteResults(Stream s, IEnumerable<TestResult> testResults)
+        public void WriteResults(Stream s, TestResults testResults)
         {
             workbook = new XSSFWorkbook();
             summarySheet = workbook.CreateSheet("Summary");
@@ -31,11 +31,11 @@ namespace TestParser.Core
 
             workbook.Write(s);
 
-            // Handy check to see caching is working.
+            // Handy check to see if caching is working.
             int numStylesCreated = FluentCell.NumCachedStyles;
         }
 
-        void CreateResultsSheet(IEnumerable<TestResult> testResults)
+        void CreateResultsSheet(TestResults testResults)
         {
             const int ColAssemblyFileName = 0;
             const int ColClassName = 1;
@@ -71,7 +71,7 @@ namespace TestParser.Core
             row.SetCell(ColTestResultFileType, "TestResultFileType").HeaderStyle().ApplyStyle();
 
             int i = 1;
-            foreach (var r in GetSortedResults(testResults))
+            foreach (var r in testResults.Lines.SortedByFailedOtherPassed)
             {
                 row = resultsSheet.CreateRow(i);
                 row.SetCell(ColResultsPathName, r.ResultsPathName);
@@ -113,47 +113,22 @@ namespace TestParser.Core
             resultsSheetConditionalFormatting.AddConditionalFormatting(region, ResultOutcomeFormattingRules);
         }
 
-        /// <summary>
-        /// Sort the results so that they are ordered: "Failures, NonPassed, Passed".
-        /// </summary>
-        /// <param name="testResults">The test results.</param>
-        /// <returns>Ordered results.</returns>
-        IEnumerable<TestResult> GetSortedResults(IEnumerable<TestResult> testResults)
+        void CreateSummarySheet(TestResults testResults)
         {
-            var decoratedResults = (from tr in testResults
-                                    select new
-                                    {
-                                        SortGroup = tr.Outcome == KnownOutcomes.Passed ? 2 :
-                                                    tr.Outcome == KnownOutcomes.Failed ? 0 : 1,
-                                        Result = tr
-                                    }).OrderBy(dr => dr.SortGroup).
-                                     ThenBy(dr => dr.Result.ResultsPathName).
-                                     ThenBy(dr => dr.Result.AssemblyPathName).
-                                     ThenBy(dr => dr.Result.ClassName).
-                                     ThenBy(dr => dr.Result.TestName);
-
-            return decoratedResults.Select(dr => dr.Result);
-        }
-
-        void CreateSummarySheet(IEnumerable<TestResult> testResults)
-        {
-            var sba = TestResultSummaryLine.SummariseByAssembly(testResults);
-            int rowNum = CreateSummary("Summary By Assembly", 0, sba);
-
-            var sbc = TestResultSummaryLine.SummariseByClass(testResults);
+            int rowNum = CreateSummary("Summary By Assembly", 0, testResults.SummaryByAssembly, testResults.Outcomes);
             rowNum++;
-            rowNum = CreateSummary("Summary By Class", rowNum, sbc);
+            rowNum = CreateSummary("Summary By Class", rowNum, testResults.SummaryByClass, testResults.Outcomes);
 
             // Set the widths.
             summarySheet.SetColumnWidth(0, 12000);
             summarySheet.SetColumnWidth(1, 12000);
             summarySheet.SetColumnWidth(2, 3000);
             summarySheet.SetColumnWidth(3, 2500);
-            for (int colNum = 4; colNum <= 4 + sba.ElementAt(0).Outcomes.Count(); colNum++)
+            for (int colNum = 4; colNum <= 4 + testResults.Outcomes.Count(); colNum++)
                 summarySheet.SetColumnWidth(colNum, 3000);
         }
 
-        int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummaryLine> summary)
+        int CreateSummary(string largeHeaderName, int rowNum, TestResultSummary summary, IEnumerable<string> outcomes)
         {
             int colNum = 0;
             int topOfSums = rowNum + 3;
@@ -171,18 +146,18 @@ namespace TestParser.Core
             row.SetCell(3, "Percent").HeaderStyle().ApplyStyle();
             row.SetCell(4, "Total").HeaderStyle().ApplyStyle();
             colNum = 5;
-            foreach (var oc in summary.ElementAt(0).Outcomes)
+            foreach (var oc in outcomes)
             {
-                row.SetCell(colNum++, oc.Outcome).HeaderStyle().ApplyStyle();
+                row.SetCell(colNum++, oc).HeaderStyle().ApplyStyle();
             }
 
-            foreach (var s in summary)
+            foreach (var s in summary.Lines.OrderBy(line => line.AssemblyFileName).ThenBy(line => line.ClassName))
             {
                 row = summarySheet.CreateRow(rowNum++);
                 row.SetCell(0, s.AssemblyFileName);
                 row.SetCell(1, s.ClassName);
                 row.SetCell(2, s.TotalDurationInSeconds).Format("0.00").ApplyStyle();
-                row.SetFormula(3, "F{0}/E{0}", rowNum).FormatPercentage().ApplyStyle();
+                row.SetCell(3, s.PercentPassed).FormatPercentage().ApplyStyle();
                 row.SetCell(4, s.TotalTests);
 
                 colNum = 5;
@@ -191,18 +166,20 @@ namespace TestParser.Core
                     var cell = row.SetCell(colNum++, oc.NumTests);
                     if (oc.Outcome == KnownOutcomes.Failed && oc.NumTests > 0)
                         cell.SolidFillColor(HSSFColor.Red.Index).ApplyStyle();
+                    else if (oc.Outcome != KnownOutcomes.Passed && oc.NumTests > 0)
+                        cell.SolidFillColor(HSSFColor.Yellow.Index).ApplyStyle();
                 }
             }
 
             row = summarySheet.CreateRow(rowNum++);
-            row.SetFormula(2, "SUM(C{0}:C{1})", topOfSums, rowNum - 1).SummaryStyle().Format("0.00").ApplyStyle();
-            row.SetFormula(3, "F{0}/E{0}", rowNum).SummaryStyle().FormatPercentage().ApplyStyle();
-            row.SetFormula(4, "SUM(E{0}:E{1})", topOfSums, rowNum - 1).SummaryStyle().ApplyStyle();
-            int maxCol = 5 + summary.ElementAt(0).Outcomes.Count();
-            for (int cn = 5; cn < maxCol; cn++)
+            row.SetCell(2, summary.TotalDurationInSeconds).SummaryStyle().Format("0.00").ApplyStyle();
+            row.SetCell(3, summary.PercentPassed).SummaryStyle().FormatPercentage().ApplyStyle();
+            row.SetCell(4, summary.TotalTests).SummaryStyle().ApplyStyle();
+
+            int cn = 5;
+            foreach (var oc in outcomes)
             {
-                string colRef = CellReference.ConvertNumToColString(cn);
-                row.SetFormula(cn, "SUM({1}{0}:{1}{2})", topOfSums, colRef, rowNum - 1).SummaryStyle().ApplyStyle();
+                row.SetCell(cn++, summary.TotalByOutcome(oc)).SummaryStyle().ApplyStyle();
             }
 
             ConditionalFormatPercentage(topOfSums, rowNum - 1);

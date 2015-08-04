@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -7,7 +6,7 @@ namespace TestParser.Core
 {
     public class JSONTestResultWriter : ITestResultWriter
     {
-        public void WriteResults(Stream s, IEnumerable<TestResult> testResults)
+        public void WriteResults(Stream s, TestResults testResults)
         {
             var utf8WithoutBom = new UTF8Encoding(false);
 

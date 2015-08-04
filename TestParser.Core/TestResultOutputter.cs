@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace TestParser.Core
@@ -16,7 +15,7 @@ namespace TestParser.Core
         /// <param name="outputFilename">The output filename. If null, output is to stdout.</param>
         /// <param name="outputFormat">The output format.</param>
         /// <exception cref="Exception">Output format must be specified.</exception>
-        public void OutputResults(IEnumerable<TestResult> results, string outputFilename, OutputFormat outputFormat)
+        public void OutputResults(TestResults results, string outputFilename, OutputFormat outputFormat)
         {
             using (Stream s = outputFilename == null ? Console.OpenStandardOutput() : new FileStream(outputFilename, FileMode.Create))
             {

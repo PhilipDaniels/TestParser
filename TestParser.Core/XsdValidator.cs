@@ -7,6 +7,9 @@ using System.Xml.Schema;
 
 namespace TestParser.Core
 {
+    /// <summary>
+    /// NOT USED.
+    /// </summary>
     public class XsdValidator
     {
         public List<XmlSchema> Schemas { get; set; }
