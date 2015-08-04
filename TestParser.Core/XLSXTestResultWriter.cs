@@ -137,10 +137,10 @@ namespace TestParser.Core
 
         void CreateSummarySheet(IEnumerable<TestResult> testResults)
         {
-            var sba = TestResultSummary.SummariseByAssembly(testResults);
+            var sba = TestResultSummaryLine.SummariseByAssembly(testResults);
             int rowNum = CreateSummary("Summary By Assembly", 0, sba);
 
-            var sbc = TestResultSummary.SummariseByClass(testResults);
+            var sbc = TestResultSummaryLine.SummariseByClass(testResults);
             rowNum++;
             rowNum = CreateSummary("Summary By Class", rowNum, sbc);
 
@@ -153,7 +153,7 @@ namespace TestParser.Core
                 summarySheet.SetColumnWidth(colNum, 3000);
         }
 
-        int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummary> summary)
+        int CreateSummary(string largeHeaderName, int rowNum, IEnumerable<TestResultSummaryLine> summary)
         {
             int colNum = 0;
             int topOfSums = rowNum + 3;

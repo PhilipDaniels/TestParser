@@ -5,7 +5,7 @@ namespace TestParser.Core
 {
     /// <summary>
     /// Contains some properties that are common to a <see cref="TestResult"/>
-    /// and a <see cref="TestResultSummary"/>.
+    /// and a <see cref="TestResultSummaryLine"/>.
     /// </summary>
     public abstract class TestResultBase
     {

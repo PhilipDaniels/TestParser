@@ -8,12 +8,12 @@ namespace TestParser.Core
     /// A simple class to summarise a set of <see cref="TestResult"/>.
     /// </summary>
     [DebuggerDisplay("{AssemblyFileName}, Passed={TotalPassed}/{TotalTests} in {TotalDurationInSeconds} secs.")]
-    public class TestResultSummary : TestResultBase
+    public class TestResultSummaryLine : TestResultBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestResultSummary"/> class.
+        /// Initializes a new instance of the <see cref="TestResultSummaryLine"/> class.
         /// </summary>
-        public TestResultSummary()
+        public TestResultSummaryLine()
         {
             Outcomes = new List<ResultOutcomeSummary>();
         }
@@ -57,6 +57,23 @@ namespace TestParser.Core
         }
 
         /// <summary>
+        /// Gets the percent passed (0..1).
+        /// </summary>
+        /// <value>
+        /// The percent passed.
+        /// </value>
+        public double PercentPassed
+        {
+            get
+            {
+                if (TotalTests == 0)
+                    return 0;
+                else
+                    return TotalPassed / TotalTests;
+            }
+        }
+
+        /// <summary>
         /// Gets the total duration in seconds in this summary line.
         /// </summary>
         /// <value>
@@ -76,9 +93,9 @@ namespace TestParser.Core
         /// </summary>
         /// <param name="testResults">The test results.</param>
         /// <returns>Summary of results grouped by assembly.</returns>
-        public static IEnumerable<TestResultSummary> SummariseByAssembly(IEnumerable<TestResult> testResults)
+        public static IEnumerable<TestResultSummaryLine> SummariseByAssembly(IEnumerable<TestResult> testResults)
         {
-            var summaries = new List<TestResultSummary>();
+            var summaries = new List<TestResultSummaryLine>();
             var outcomeNames = ResultOutcomeSummary.GetOutcomeNames(testResults);
 
             var sbaRows = testResults.GroupBy(r => r.AssemblyPathName)
@@ -91,7 +108,7 @@ namespace TestParser.Core
 
             foreach (var sbaRow in sbaRows)
             {
-                var summary = new TestResultSummary();
+                var summary = new TestResultSummaryLine();
                 summary.AssemblyPathName = sbaRow.AssemblyPathName;
                 summary.FullClassName = "";
 
@@ -114,9 +131,9 @@ namespace TestParser.Core
         /// </summary>
         /// <param name="testResults">The test results.</param>
         /// <returns>Summary of results grouped by assembly and then by class.</returns>
-        public static IEnumerable<TestResultSummary> SummariseByClass(IEnumerable<TestResult> testResults)
+        public static IEnumerable<TestResultSummaryLine> SummariseByClass(IEnumerable<TestResult> testResults)
         {
-            var summaries = new List<TestResultSummary>();
+            var summaries = new List<TestResultSummaryLine>();
             var outcomeNames = ResultOutcomeSummary.GetOutcomeNames(testResults);
 
             var sbaRows = testResults.GroupBy(r => new { r.AssemblyPathName, r.ClassName })
@@ -130,7 +147,7 @@ namespace TestParser.Core
 
             foreach (var sbaRow in sbaRows)
             {
-                var summary = new TestResultSummary();
+                var summary = new TestResultSummaryLine();
                 summary.AssemblyPathName = sbaRow.AssemblyPathName;
                 summary.FullClassName = sbaRow.FullClassName;
 
