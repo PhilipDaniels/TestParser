@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace TestParser.Core
 {
@@ -15,7 +16,10 @@ namespace TestParser.Core
                 var settings = new JsonSerializerSettings();
                 settings.Formatting = Formatting.Indented;
                 settings.NullValueHandling = NullValueHandling.Ignore;
+                settings.Converters.Add(new StringEnumConverter());
+
                 var jser = JsonSerializer.Create(settings);
+
                 jser.Serialize(sw, testResults);
             }
         }

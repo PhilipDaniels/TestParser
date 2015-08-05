@@ -12,14 +12,6 @@ namespace TestParser.Core
     public class TestResultSummaryLine : TestResultBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestResultSummaryLine"/> class.
-        /// </summary>
-        public TestResultSummaryLine()
-        {
-            Outcomes = new List<ResultOutcomeSummary>();
-        }
-
-        /// <summary>
         /// The outcomes. The well-known outcomes "Passed" and "Failed" will always be
         /// there, and always the first two outcomes. The other outcomes, if any, come
         /// after that.
@@ -28,6 +20,14 @@ namespace TestParser.Core
         /// The outcomes.
         /// </value>
         public List<ResultOutcomeSummary> Outcomes { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestResultSummaryLine"/> class.
+        /// </summary>
+        public TestResultSummaryLine()
+        {
+            Outcomes = new List<ResultOutcomeSummary>();
+        }
 
         /// <summary>
         /// Gets the total number of tests in this summary line.

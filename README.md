@@ -33,3 +33,8 @@ TestParser.exe "/of:C:\temp\My Results.xlsx" "C:\Test Files\**\*.trx"
 
 ## Status
 Beta. Need more example test files to test it on.
+
+## Issues
+When using the JSON output, you don't get the grand totals for each outcome, because
+the JSON.net serializer doesn't call the TotalByOutcome() method that the custom Xlsx serializer
+does.

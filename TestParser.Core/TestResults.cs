@@ -7,28 +7,28 @@ namespace TestParser.Core
     /// <summary>
     /// Store and summarise the entire set of test results.
     /// The summaries are mainly for convenience, equivalent or similar
-    /// summaries can be created by Linq queries over the <see cref="Lines"/>.
+    /// summaries can be created by Linq queries over the <see cref="ResultLines"/>.
     /// </summary>
     public class TestResults
     {
-        List<string> outcomes; 
+        List<string> outcomeNames;
         
-        public TestResultCollection Lines { get; private set; }
+        public TestResultCollection ResultLines { get; private set; }
         public TestResultSummary SummaryByAssembly { get; private set; }
         public TestResultSummary SummaryByClass { get; private set; }
-        public IEnumerable<string> Outcomes { get { return outcomes; } }
+        public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
 
         public TestResults()
         {
-            Lines = new TestResultCollection();
-            outcomes = new List<string>();
+            ResultLines = new TestResultCollection();
+            outcomeNames = new List<string>();
         }
 
         public void Add(TestResult result)
         {
             result.ThrowIfNull("result");
 
-            Lines.Add(result);
+            ResultLines.Add(result);
         }
 
         public void AddRange(IEnumerable<TestResult> results)
@@ -56,12 +56,12 @@ namespace TestParser.Core
         /// </summary>
         void SummariseOutcomeNames()
         {
-            outcomes = new List<string>();
-            outcomes.Add(KnownOutcomes.Passed);
-            outcomes.Add(KnownOutcomes.Failed);
+            outcomeNames = new List<string>();
+            outcomeNames.Add(KnownOutcomes.Passed);
+            outcomeNames.Add(KnownOutcomes.Failed);
 
             var remainingOutcomes = new List<string>();
-            foreach (var result in Lines)
+            foreach (var result in ResultLines)
             {
                 string oc = result.Outcome;
                 if (oc != KnownOutcomes.Passed && oc != KnownOutcomes.Failed && !remainingOutcomes.Contains(oc))
@@ -69,7 +69,7 @@ namespace TestParser.Core
             }
 
             remainingOutcomes.Sort();
-            outcomes.AddRange(remainingOutcomes);
+            outcomeNames.AddRange(remainingOutcomes);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace TestParser.Core
         {
             SummaryByAssembly = new TestResultSummary();
 
-            var sbaRows = Lines.GroupBy(r => r.AssemblyPathName)
+            var sbaRows = ResultLines.GroupBy(r => r.AssemblyPathName)
                           .Select(gr => new
                           {
                               AssemblyPathName = gr.Key,
@@ -93,7 +93,7 @@ namespace TestParser.Core
                 summary.AssemblyPathName = row.AssemblyPathName;
                 summary.FullClassName = "";
 
-                foreach (var ocn in Outcomes)
+                foreach (var ocn in OutcomeNames)
                 {
                     var oc = new ResultOutcomeSummary() { Outcome = ocn };
                     oc.NumTests = (from r in row.TestResults where r.Outcome == ocn select r).Count();
@@ -112,7 +112,7 @@ namespace TestParser.Core
         {
             SummaryByClass = new TestResultSummary();
 
-            var sbaRows = Lines.GroupBy(r => new { r.AssemblyPathName, r.ClassName })
+            var sbaRows = ResultLines.GroupBy(r => new { r.AssemblyPathName, r.ClassName })
                           .Select(gr => new
                           {
                               AssemblyPathName = gr.Key.AssemblyPathName,
@@ -126,7 +126,7 @@ namespace TestParser.Core
                 summary.AssemblyPathName = sbaRow.AssemblyPathName;
                 summary.FullClassName = sbaRow.FullClassName;
 
-                foreach (var ocn in Outcomes)
+                foreach (var ocn in OutcomeNames)
                 {
                     var oc = new ResultOutcomeSummary() { Outcome = ocn };
                     oc.NumTests = (from r in sbaRow.TestResults where r.Outcome == ocn select r).Count();

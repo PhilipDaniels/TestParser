@@ -30,7 +30,7 @@ namespace TestParser.Core
                 sw.Write("TestResultFileType");
                 sw.WriteLine();
 
-                foreach (var r in testResults.Lines.SortedByFailedOtherPassed)
+                foreach (var r in testResults.ResultLines.SortedByFailedOtherPassed)
                 {
                     sw.Write(Quoter.CSVQuote(r.ResultsPathName)); sw.Write(",");
                     sw.Write(Quoter.CSVQuote(r.ResultsFileName)); sw.Write(",");

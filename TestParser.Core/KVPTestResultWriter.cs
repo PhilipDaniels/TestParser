@@ -12,7 +12,7 @@ namespace TestParser.Core
 
             using (var sw = new StreamWriter(s, utf8WithoutBom))
             {
-                foreach (var r in testResults.Lines.SortedByFailedOtherPassed)
+                foreach (var r in testResults.ResultLines.SortedByFailedOtherPassed)
                 {
                     sw.Write(" ResultsPathName=" + Quoter.KVPQuote(r.ResultsPathName));
                     sw.Write(" ResultsFileName=" + Quoter.KVPQuote(r.ResultsFileName));

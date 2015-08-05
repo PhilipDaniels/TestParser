@@ -71,7 +71,7 @@ namespace TestParser.Core
             row.SetCell(ColTestResultFileType, "TestResultFileType").HeaderStyle().ApplyStyle();
 
             int i = 1;
-            foreach (var r in testResults.Lines.SortedByFailedOtherPassed)
+            foreach (var r in testResults.ResultLines.SortedByFailedOtherPassed)
             {
                 row = resultsSheet.CreateRow(i);
                 row.SetCell(ColResultsPathName, r.ResultsPathName);
@@ -115,16 +115,16 @@ namespace TestParser.Core
 
         void CreateSummarySheet(TestResults testResults)
         {
-            int rowNum = CreateSummary("Summary By Assembly", 0, testResults.SummaryByAssembly, testResults.Outcomes);
+            int rowNum = CreateSummary("Summary By Assembly", 0, testResults.SummaryByAssembly, testResults.OutcomeNames);
             rowNum++;
-            rowNum = CreateSummary("Summary By Class", rowNum, testResults.SummaryByClass, testResults.Outcomes);
+            rowNum = CreateSummary("Summary By Class", rowNum, testResults.SummaryByClass, testResults.OutcomeNames);
 
             // Set the widths.
             summarySheet.SetColumnWidth(0, 12000);
             summarySheet.SetColumnWidth(1, 12000);
             summarySheet.SetColumnWidth(2, 3000);
             summarySheet.SetColumnWidth(3, 2500);
-            for (int colNum = 4; colNum <= 4 + testResults.Outcomes.Count(); colNum++)
+            for (int colNum = 4; colNum <= 4 + testResults.OutcomeNames.Count(); colNum++)
                 summarySheet.SetColumnWidth(colNum, 3000);
         }
 
@@ -151,7 +151,7 @@ namespace TestParser.Core
                 row.SetCell(colNum++, oc).HeaderStyle().ApplyStyle();
             }
 
-            foreach (var s in summary.Lines.OrderBy(line => line.AssemblyFileName).ThenBy(line => line.ClassName))
+            foreach (var s in summary.SummaryLines.OrderBy(line => line.AssemblyFileName).ThenBy(line => line.ClassName))
             {
                 row = summarySheet.CreateRow(rowNum++);
                 row.SetCell(0, s.AssemblyFileName);

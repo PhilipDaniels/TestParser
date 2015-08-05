@@ -6,20 +6,20 @@ namespace TestParser.Core
 {
     public class TestResultSummary
     {
-        private readonly List<TestResultSummaryLine> lines;
+        private readonly List<TestResultSummaryLine> summaryLines;
 
-        public IEnumerable<TestResultSummaryLine> Lines { get { return lines; } }
+        public IEnumerable<TestResultSummaryLine> SummaryLines { get { return summaryLines; } }
 
         public TestResultSummary()
         {
-            lines = new List<TestResultSummaryLine>();
+            summaryLines = new List<TestResultSummaryLine>();
         }
 
         public void Add(TestResultSummaryLine summaryLine)
         {
             summaryLine.ThrowIfNull("summaryLine");
 
-            lines.Add(summaryLine);
+            summaryLines.Add(summaryLine);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace TestParser.Core
         {
             get
             {
-                return Lines.Sum(c => c.TotalTests);
+                return SummaryLines.Sum(c => c.TotalTests);
             }
         }
 
@@ -46,7 +46,7 @@ namespace TestParser.Core
         {
             get
             {
-                return Lines.Sum(c => c.TotalPassed);
+                return SummaryLines.Sum(c => c.TotalPassed);
             }
         }
 
@@ -59,7 +59,7 @@ namespace TestParser.Core
         {
             outcome.ThrowIfNull("outcome");
 
-            return Lines.Sum(c => c.TotalByOutcome(outcome));
+            return SummaryLines.Sum(c => c.TotalByOutcome(outcome));
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace TestParser.Core
         {
             get
             {
-                return Lines.Sum(c => c.TotalDurationInSeconds);
+                return SummaryLines.Sum(c => c.TotalDurationInSeconds);
             }
         }
     }
