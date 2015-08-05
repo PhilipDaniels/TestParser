@@ -26,8 +26,10 @@ TestParser.exe /fmt:csv foo.trx
 TestParser.exe /of:C:\temp\results.json C:\bin\foo.trx C:\bin\bar.xml
 ```
 
+If your filenames contain spaces, surround the entire argument with double quotes:
+```
+TestParser.exe "/of:C:\temp\My Results.xlsx" "C:\Test Files\**\*.trx"
+```
+
 ## Status
 Beta. Need more example test files to test it on.
-
-## Bugs
-Spaces in `<testfiles>`?
