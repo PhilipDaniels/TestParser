@@ -31,6 +31,11 @@ If your filenames contain spaces, surround the entire argument with double quote
 TestParser.exe "/of:C:\temp\My Results.xlsx" "C:\Test Files\**\*.trx"
 ```
 
+With no `/fmt` or `/of` specified, results are dumped to stdout as CSV:
+```
+TestParser.exe **\*.trx > MyResults.csv
+```
+
 ## Status
 Beta. Need more example test files to test it on.
 
