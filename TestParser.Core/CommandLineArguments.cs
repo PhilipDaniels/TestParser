@@ -147,10 +147,11 @@ namespace TestParser.Core
 
             sb.AppendLine("Usage");
             sb.AppendLine("=====");
-            sb.AppendLine("TestParser.exe [/of:<filename> | /fmt:<format>] <testfiles>");
+            sb.AppendLine("TestParser.exe [/fmt:<format> | /of:<filename>] <testfiles>");
             sb.AppendLine("");
             sb.AppendLine("If /fmt is specified, output is written to stdout. Valid formats");
-            sb.AppendLine("are json, csv, kvp and xlsx.");
+            sb.AppendLine("are json, csv, kvp and xlsx. If using xlsx, you really should");
+            sb.AppendLine("redirect to a file because the output will be in binary format.");
             sb.AppendLine("");
             sb.AppendLine("If /of is specified, output is written to a file and the format");
             sb.AppendLine("of the file is inferred from the extension. Valid extensions are");
@@ -164,10 +165,21 @@ namespace TestParser.Core
             sb.AppendLine("");
             sb.AppendLine("Examples");
             sb.AppendLine("========");
+            sb.AppendLine("Typical usage:");
             sb.AppendLine("");
-            sb.AppendLine(@"TestParser.exe /of:C:\temp\results.xlsx **\*.trx ..\**\NUnitResults\*.xml");
-            sb.AppendLine(@"TestParser.exe /fmt:csv foo.trx");
-            sb.AppendLine(@"TestParser.exe /of:C:\temp\results.json C:\bin\foo.trx C:\bin\bar.xml");
+            sb.AppendLine(@"  TestParser.exe /of:C:\temp\results.xlsx **\*.trx ..\**\NUnitResults\*.xml");
+            sb.AppendLine(@"  TestParser.exe /fmt:csv foo.trx");
+            sb.AppendLine(@"  TestParser.exe /of:C:\temp\results.json C:\bin\foo.trx C:\bin\bar.xml");
+            sb.AppendLine("");
+            sb.AppendLine("If your filenames contain spaces, surround the entire argument with");
+            sb.AppendLine("double quotes:");
+            sb.AppendLine("");
+            sb.AppendLine(@"  TestParser.exe ""/of:C:\temp\My Results.xlsx"" ""C:\Test Files\**\*.trx""");
+            sb.AppendLine("");
+            sb.AppendLine("With no /fmt or /of specified, results are dumped to stdout as CSV:");
+            sb.AppendLine("");
+            sb.AppendLine(@"  TestParser.exe **\*.trx > MyResults.csv");
+            sb.AppendLine("");
 
             return sb.ToString();
         }

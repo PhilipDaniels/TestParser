@@ -5,7 +5,7 @@ The results can then be output in various formats.
 ## Usage
 
 ```
-TestParser.exe [/of:<filename> | /fmt:<format>] <testfiles>
+TestParser.exe [/fmt:<format> | /of:<filename>] <testfiles>
 ```
 
 If `/fmt` is specified, output is written to stdout. Valid formats are `json`, `csv`, `kvp` and `xlsx`.
