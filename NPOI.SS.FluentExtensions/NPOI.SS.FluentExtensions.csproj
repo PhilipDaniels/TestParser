@@ -55,9 +55,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FluentCell.MiscStyling.cs" />
     <Compile Include="FluentCell.cs" />
+    <Compile Include="FluentCell.FontStyling.cs" />
+    <Compile Include="FluentCell.MainStyling.cs" />
     <Compile Include="FluentStyle.cs" />
-    <Compile Include="ICellExtensions.cs" />
+    <Compile Include="ICellExtensions.MainStyling.cs" />
+    <Compile Include="ICellExtensions.FontStyling.cs" />
+    <Compile Include="ICellExtensions.MiscStyling.cs" />
     <Compile Include="IRowExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

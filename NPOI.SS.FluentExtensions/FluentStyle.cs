@@ -2,9 +2,14 @@
 
 namespace NPOI.SS.FluentExtensions
 {
+    /// <summary>
+    /// Provides a data structure which can be used to accumulate
+    /// styling options via a Fluent API, until they need to be applied
+    /// to a cell.
+    /// </summary>
     public class FluentStyle
     {
-        #region Main cell style properties
+        // Main cell style properties
         public HorizontalAlignment? Alignment { get; set; }
         public BorderStyle? BorderBottom { get; set; }
         public BorderDiagonal? BorderDiagonal { get; set; }
@@ -26,9 +31,8 @@ namespace NPOI.SS.FluentExtensions
         public short? TopBorderColor { get; set; }
         public VerticalAlignment? VerticalAlignment { get; set; }
         public bool? WrapText { get; set; }
-        #endregion
 
-        #region Font properties
+        // Font properties
         public FontBoldWeight? FontWeight { get; set; }
         public short? Charset { get; set; }
         public short? Color { get; set; }
@@ -39,7 +43,6 @@ namespace NPOI.SS.FluentExtensions
         public bool? Strikeout { get; set; }
         public FontSuperScript? SuperScript { get; set; }
         public FontUnderlineType? Underline { get; set; }
-        #endregion
 
         /// <summary>
         /// Gets or sets the format, e.g. "0.00%".
@@ -50,6 +53,11 @@ namespace NPOI.SS.FluentExtensions
         /// </value>
         public string Format { get; set; }
 
+        /// <summary>
+        /// Applies the style by copying the fluent style to the NPOI style object,.
+        /// </summary>
+        /// <param name="workbook">The workbook.</param>
+        /// <param name="destination">The destination NPOI style object to apply the FluentStyle to.</param>
         public void ApplyStyle(IWorkbook workbook, ICellStyle destination)
         {
             // If users sets format string this overrides the DataFormat property.
