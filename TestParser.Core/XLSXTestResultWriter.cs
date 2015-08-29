@@ -18,6 +18,22 @@ namespace TestParser.Core
         ISheetConditionalFormatting summarySheetConditionalFormatting;
         ISheetConditionalFormatting resultsSheetConditionalFormatting;
         TestResults testResults;
+        readonly string yellowBandString;
+        readonly string greenBandString;
+
+        const int SumColAssembly = 0;
+        const int SumColClass = 1;
+        const int SumColTime = 2;
+        const int SumColTimeHuman = 3;
+        const int SumColPercent = 4;
+        const int SumColTotal = 5;
+        const int SumColPassed = 6;
+
+        public XLSXTestResultWriter(int yellowBand, int greenBand)
+        {
+            yellowBandString = (((decimal)yellowBand) / 100m).ToString();
+            greenBandString = (((decimal)greenBand) / 100m).ToString();
+        }
 
         public void WriteResults(Stream s, TestResults testResults)
         {
@@ -176,14 +192,6 @@ namespace TestParser.Core
             }
         }
 
-        const int SumColAssembly = 0;
-        const int SumColClass = 1;
-        const int SumColTime = 2;
-        const int SumColTimeHuman = 3;
-        const int SumColPercent = 4;
-        const int SumColTotal = 5;
-        const int SumColPassed = 6;
-
         int CreateSummary(string largeHeaderName, int rowNum, TestResultSummary summary, IEnumerable<string> outcomes)
         {
             int colNum = 0;
@@ -273,17 +281,17 @@ namespace TestParser.Core
             {
                 if (summaryPercentageFormattingRules == null)
                 {
-                    IConditionalFormattingRule rule1 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.GreaterThanOrEqual, "1");
+                    IConditionalFormattingRule rule1 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.GreaterThanOrEqual, greenBandString);
                     IPatternFormatting fill1 = rule1.CreatePatternFormatting();
                     fill1.FillBackgroundColor = IndexedColors.BrightGreen.Index;
                     fill1.FillPattern = (short)FillPattern.SolidForeground;
 
-                    IConditionalFormattingRule rule2 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.GreaterThanOrEqual, "0.9");
+                    IConditionalFormattingRule rule2 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.GreaterThanOrEqual, yellowBandString);
                     IPatternFormatting fill2 = rule2.CreatePatternFormatting();
                     fill2.FillBackgroundColor = IndexedColors.Yellow.Index;
                     fill2.FillPattern = (short)FillPattern.SolidForeground;
 
-                    IConditionalFormattingRule rule3 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.LessThan, "0.9");
+                    IConditionalFormattingRule rule3 = summarySheetConditionalFormatting.CreateConditionalFormattingRule(ComparisonOperator.LessThan, yellowBandString);
                     IPatternFormatting fill3 = rule3.CreatePatternFormatting();
                     fill3.FillBackgroundColor = IndexedColors.Red.Index;
                     fill3.FillPattern = (short)FillPattern.SolidForeground;

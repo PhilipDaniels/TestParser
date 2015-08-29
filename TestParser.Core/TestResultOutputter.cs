@@ -12,15 +12,14 @@ namespace TestParser.Core
         /// Outputs the results to an appropriate file or stdout.
         /// </summary>
         /// <param name="results">The test results.</param>
-        /// <param name="outputFilename">The output filename. If null, output is to stdout.</param>
-        /// <param name="outputFormat">The output format.</param>
+        /// <param name="cla">The command line arguments.</param>
         /// <exception cref="Exception">Output format must be specified.</exception>
-        public void OutputResults(TestResults results, string outputFilename, OutputFormat outputFormat)
+        public void OutputResults(TestResults results, CommandLineArguments cla)
         {
-            using (Stream s = outputFilename == null ? Console.OpenStandardOutput() : new FileStream(outputFilename, FileMode.Create))
+            using (Stream s = cla.OutputFilename == null ? Console.OpenStandardOutput() : new FileStream(cla.OutputFilename, FileMode.Create))
             {
                 ITestResultWriter writer = null;
-                switch (outputFormat)
+                switch (cla.OutputFormat)
                 {
                     case OutputFormat.CSV:
                         writer = new CSVTestResultWriter();
@@ -32,10 +31,10 @@ namespace TestParser.Core
                         writer = new KVPTestResultWriter();
                         break;
                     case OutputFormat.Xlsx:
-                        writer = new XLSXTestResultWriter();
+                        writer = new XLSXTestResultWriter(cla.YellowBand, cla.GreenBand);
                         break;
                     default:
-                        throw new Exception("Unsupported output format: " + outputFormat);
+                        throw new Exception("Unsupported output format: " + cla.OutputFormat);
                 }
 
                 writer.WriteResults(s, results);

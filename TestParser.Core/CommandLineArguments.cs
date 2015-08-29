@@ -29,6 +29,25 @@ namespace TestParser.Core
         public string OutputFilename { get; private set; }
 
         /// <summary>
+        /// Specifies the yellow band to be used when formatting Excel percentages.
+        /// Defaults to 90, which means 90% is required to be coloured yellow.
+        /// Percentages below that will be coloured red.
+        /// </summary>
+        /// <value>
+        /// The yellow band.
+        /// </value>
+        public int YellowBand { get; private set; }
+
+        /// <summary>
+        /// Specifies the green band to be used when formatting Excel percentages.
+        /// Defaults to 100, which means 100% is required to be coloured green.
+        /// </summary>
+        /// <value>
+        /// The green band.
+        /// </value>
+        public int GreenBand { get; private set; }
+
+        /// <summary>
         /// Gets the test files. These are the files to be parsed.
         /// This list is set by globbing the file parameters you specify on the
         /// command line.
@@ -68,6 +87,8 @@ namespace TestParser.Core
         public CommandLineArguments(string[] args)
         {
             OutputFormat = OutputFormat.Unspecified;
+            YellowBand = 90;
+            GreenBand = 100;
             TestFiles = new List<string>();
             RemainingArguments = new List<string>();
 
@@ -147,39 +168,46 @@ namespace TestParser.Core
 
             sb.AppendLine("Usage");
             sb.AppendLine("=====");
-            sb.AppendLine("TestParser.exe [/fmt:<format> | /of:<filename>] <testfiles>");
-            sb.AppendLine("");
+            sb.AppendLine("TestParser.exe [/fmt:<format> | /of:<filename>] [/bands:<yellow>,<green>] <testfiles>");
+            sb.AppendLine();
             sb.AppendLine("If /fmt is specified, output is written to stdout. Valid formats");
             sb.AppendLine("are json, csv, kvp and xlsx. If using xlsx, you really should");
             sb.AppendLine("redirect to a file because the output will be in binary format.");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine("If /of is specified, output is written to a file and the format");
             sb.AppendLine("of the file is inferred from the extension. Valid extensions are");
             sb.AppendLine("the same as the /fmt argument.");
-            sb.AppendLine("");
+            sb.AppendLine();
+            sb.AppendLine("If output is to Excel, you may use the /bands argument to specify");
+            sb.AppendLine("the thresholds for red/yellow/green formatting of the 'Percent'");
+            sb.AppendLine("column on the summary tab. The bands must be an integer in the");
+            sb.AppendLine("range of 0..100 and the green band must be greater than the yellow");
+            sb.AppendLine("band. Percentages below the yellow band are coloured red.");
+            sb.AppendLine("(The colouring of the outcome names is not controllable.)");
+            sb.AppendLine();
             sb.AppendLine("File globs may be used to specify <testfiles>, for example");
             sb.AppendLine(@"'**\*.trx' will find all MS Test files in this directory and");
             sb.AppendLine("any child directories. Both MS Test and NUnit2 files can be");
             sb.AppendLine("specified in the same invocation, TestParser will guess the file");
             sb.AppendLine("type automatically and unify the results.");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine("Examples");
             sb.AppendLine("========");
             sb.AppendLine("Typical usage:");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine(@"  TestParser.exe /of:C:\temp\results.xlsx **\*.trx ..\**\NUnitResults\*.xml");
             sb.AppendLine(@"  TestParser.exe /fmt:csv foo.trx");
             sb.AppendLine(@"  TestParser.exe /of:C:\temp\results.json C:\bin\foo.trx C:\bin\bar.xml");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine("If your filenames contain spaces, surround the entire argument with");
             sb.AppendLine("double quotes:");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine(@"  TestParser.exe ""/of:C:\temp\My Results.xlsx"" ""C:\Test Files\**\*.trx""");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine("With no /fmt or /of specified, results are dumped to stdout as CSV:");
-            sb.AppendLine("");
+            sb.AppendLine();
             sb.AppendLine(@"  TestParser.exe **\*.trx > MyResults.csv");
-            sb.AppendLine("");
+            sb.AppendLine();
 
             return sb.ToString();
         }
@@ -209,6 +237,12 @@ namespace TestParser.Core
                 return;
             }
 
+            if (arg.StartsWith("/bands:"))
+            {
+                ParseBands(arg.Substring(7));
+                return;
+            }
+
             RemainingArguments.Add(arg);
         }
 
@@ -231,6 +265,51 @@ namespace TestParser.Core
             ErrorMessage = "Error: Unknown format: " + fmt;
 
             return OutputFormat.Unspecified;
+        }
+
+        void ParseBands(string arg)
+        {
+            string[] bands = arg.Split(',');
+
+            if (bands.Length != 2)
+            {
+                ErrorMessage = "Error: Two bands must be specified.";
+                return;
+            }
+
+            int yellow;
+            if (!Int32.TryParse(bands[0], out yellow))
+            {
+                ErrorMessage = "Error: Yellow band is not a number.";
+                return;
+            }
+            if (yellow < 0 || yellow > 100)
+            {
+                ErrorMessage = "Error: Yellow band is not in range 0..100 inclusive.";
+                return;
+            }
+
+            YellowBand = yellow;
+
+            int green;
+            if (!Int32.TryParse(bands[1], out green))
+            {
+                ErrorMessage = "Error: Green band is not a number.";
+                return;
+            }
+            if (green < 0 || green > 100)
+            {
+                ErrorMessage = "Error: Green band is not in range 0..100 inclusive.";
+                return;
+            }
+
+            if (green <= YellowBand)
+            {
+                ErrorMessage = "Error: Green band must be greater than the yellow band.";
+                return;
+            }
+
+            GreenBand = green;
         }
     }
 }
