@@ -31,6 +31,7 @@ namespace TestParser.Core
                     else
                         sw.Write(" EndTime=");
                     sw.Write(" DurationInSeconds=" + Quoter.KVPQuote(r.DurationInSeconds.ToString("R", CultureInfo.InvariantCulture)));
+                    sw.Write(" DurationHuman=" + Quoter.KVPQuote(r.DurationHuman));
                     sw.Write(" Outcome=" + Quoter.KVPQuote(r.Outcome));
                     sw.Write(" ErrorMessage=" + Quoter.KVPQuote(r.ErrorMessage));
                     sw.Write(" StackTrace=" + Quoter.KVPQuote(r.StackTrace));

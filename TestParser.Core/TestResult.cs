@@ -68,6 +68,20 @@ namespace TestParser.Core
         public double DurationInSeconds { get; set; }
 
         /// <summary>
+        /// Returns the duration in a human-readable "hh:mm:ss.ff" format.
+        /// </summary>
+        /// <value>
+        /// The duration in a human-readable "hh:mm:ss.ff" format.
+        /// </value>
+        public string DurationHuman
+        {
+            get
+            {
+                return HumanTime.ToHumanString(DurationInSeconds);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the outcome. The outcomes "Passed" and "Failed"
         /// are "well known names" which are used in various summary
         /// routines.

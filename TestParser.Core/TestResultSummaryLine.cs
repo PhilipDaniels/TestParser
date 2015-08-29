@@ -99,5 +99,19 @@ namespace TestParser.Core
                 return Outcomes.Sum(c => c.TotalDurationInSeconds);
             }
         }
+
+        /// <summary>
+        /// Gets the total duration in seconds as a human readable string of the form "hh:mm:ss.ff".
+        /// </summary>
+        /// <value>
+        /// The total duration in seconds as a human readable string of the form "hh:mm:ss.ff".
+        /// </value>
+        public string TotalDurationInSecondsHuman
+        {
+            get
+            {
+                return HumanTime.ToHumanString(TotalDurationInSeconds);
+            }
+        }
     }
 }

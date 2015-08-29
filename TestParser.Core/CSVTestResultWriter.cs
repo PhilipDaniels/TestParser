@@ -22,11 +22,11 @@ namespace TestParser.Core
                 sw.Write("ComputerName,");
                 sw.Write("StartTime,");
                 sw.Write("EndTime,");
-                sw.Write("Duration,");
                 sw.Write("DurationInSeconds,");
+                sw.Write("DurationHuman,");
                 sw.Write("Outcome,");
                 sw.Write("ErrorMessage,");
-                sw.Write("StackTrace");
+                sw.Write("StackTrace,");
                 sw.Write("TestResultFileType");
                 sw.WriteLine();
 
@@ -61,6 +61,7 @@ namespace TestParser.Core
                     }
 
                     sw.Write(r.DurationInSeconds.ToString("R", CultureInfo.InvariantCulture)); sw.Write(",");
+                    sw.Write(Quoter.CSVQuote(r.DurationHuman)); sw.Write(",");
                     sw.Write(Quoter.CSVQuote(r.Outcome)); sw.Write(",");
                     sw.Write(Quoter.CSVQuote(r.ErrorMessage)); sw.Write(",");
                     sw.Write(Quoter.CSVQuote(r.StackTrace)); sw.Write(",");
