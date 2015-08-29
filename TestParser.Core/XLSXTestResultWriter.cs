@@ -17,17 +17,19 @@ namespace TestParser.Core
         ISheet resultsSheet;
         ISheetConditionalFormatting summarySheetConditionalFormatting;
         ISheetConditionalFormatting resultsSheetConditionalFormatting;
+        TestResults testResults;
 
         public void WriteResults(Stream s, TestResults testResults)
         {
             workbook = new XSSFWorkbook();
             summarySheet = workbook.CreateSheet("Summary");
             resultsSheet = workbook.CreateSheet("TestResults");
+            this.testResults = testResults;
             summarySheetConditionalFormatting = summarySheet.SheetConditionalFormatting;
             resultsSheetConditionalFormatting = resultsSheet.SheetConditionalFormatting;
 
-            CreateResultsSheet(testResults);
-            CreateSummarySheet(testResults);
+            CreateResultsSheet();
+            CreateSummarySheet();
 
             workbook.Write(s);
 
@@ -35,7 +37,7 @@ namespace TestParser.Core
             int numStylesCreated = FluentCell.NumCachedStyles;
         }
 
-        void CreateResultsSheet(TestResults testResults)
+        void CreateResultsSheet()
         {
             const int ColAssemblyFileName = 0;
             const int ColClassName = 1;
@@ -116,11 +118,13 @@ namespace TestParser.Core
             resultsSheetConditionalFormatting.AddConditionalFormatting(region, ResultOutcomeFormattingRules);
         }
 
-        void CreateSummarySheet(TestResults testResults)
+        void CreateSummarySheet()
         {
             int rowNum = CreateSummary("Summary By Assembly", 0, testResults.SummaryByAssembly, testResults.OutcomeNames);
             rowNum++;
             rowNum = CreateSummary("Summary By Class", rowNum, testResults.SummaryByClass, testResults.OutcomeNames);
+            rowNum++;
+            CreateSlowestTests(rowNum, testResults.SlowestTests);
 
             // Set the widths.
             summarySheet.SetColumnWidth(SumColAssembly, 12000);
@@ -128,8 +132,48 @@ namespace TestParser.Core
             summarySheet.SetColumnWidth(SumColTime, 4000);
             summarySheet.SetColumnWidth(SumColTimeHuman, 4000);
             summarySheet.SetColumnWidth(SumColPercent, 2500);
-            for (int colNum = SumColTotal; colNum <= SumColTotal + testResults.OutcomeNames.Count(); colNum++)
+            for (int colNum = SumColTotal; colNum <= MaxSummaryColumnUsed; colNum++)
                 summarySheet.SetColumnWidth(colNum, 3000);
+        }
+
+        /// <summary>
+        /// Gets the maximum summary column used.
+        /// </summary>
+        /// <value>
+        /// The maximum summary column used.
+        /// </value>
+        int MaxSummaryColumnUsed
+        {
+            get
+            {
+                return SumColTotal + testResults.OutcomeNames.Count();
+            }
+        }
+
+        void CreateSlowestTests(int rowNum, IEnumerable<SlowestTest> slowestTests)
+        {
+            rowNum = CreateSummaryHeading("10 Slowest Tests", rowNum);
+            IRow row = summarySheet.CreateRow(rowNum++);
+            row.SetCell(SumColAssembly, "Assembly").HeaderStyle().ApplyStyle();
+            row.SetCell(SumColClass, "Class").HeaderStyle().ApplyStyle();
+            row.SetCell(SumColTime, "Time (secs)").HeaderStyle().ApplyStyle();
+            row.SetCell(SumColTimeHuman, "Time (hh:mm:ss)").HeaderStyle().ApplyStyle();
+
+            row.SetCell(SumColPercent, "Test Name").HeaderStyle().ApplyStyle();
+            var range = new CellRangeAddress(row.RowNum, row.RowNum, SumColPercent, MaxSummaryColumnUsed);
+            summarySheet.AddMergedRegion(range);
+
+            foreach (var t in slowestTests)
+            {
+                row = summarySheet.CreateRow(rowNum++);
+                row.SetCell(SumColAssembly, t.AssemblyFileName);
+                row.SetCell(SumColClass, t.ClassName);
+                row.SetCell(SumColTime, t.DurationInSeconds).Format("0.00").ApplyStyle();
+                row.SetCell(SumColTimeHuman, t.DurationHuman).Alignment(HorizontalAlignment.Right).ApplyStyle();
+                row.SetCell(SumColPercent, t.TestName);
+                range = new CellRangeAddress(row.RowNum, row.RowNum, SumColPercent, MaxSummaryColumnUsed);
+                summarySheet.AddMergedRegion(range);
+            }
         }
 
         const int SumColAssembly = 0;
@@ -145,13 +189,9 @@ namespace TestParser.Core
             int colNum = 0;
             int topOfSums = rowNum + 3;
 
-            IRow row = summarySheet.CreateRow(rowNum++);
-            row.SetCell(0, largeHeaderName).LargeHeaderStyle().ApplyStyle();
-            row.HeightInPoints = 30;
-            var range = new CellRangeAddress(row.RowNum, row.RowNum, 0, 6);
-            summarySheet.AddMergedRegion(range);
+            rowNum = CreateSummaryHeading(largeHeaderName, rowNum);
 
-            row = summarySheet.CreateRow(rowNum++);
+            IRow row = summarySheet.CreateRow(rowNum++);
             row.SetCell(SumColAssembly, "Assembly").HeaderStyle().ApplyStyle();
             row.SetCell(SumColClass, "Class").HeaderStyle().ApplyStyle();
             row.SetCell(SumColTime, "Time (secs)").HeaderStyle().ApplyStyle();
@@ -200,6 +240,16 @@ namespace TestParser.Core
             ConditionalFormatPercentage(topOfSums, rowNum - 1);
             ConditionalFormatFails(topOfSums, rowNum - 1);
 
+            return rowNum;
+        }
+
+        private int CreateSummaryHeading(string largeHeaderName, int rowNum)
+        {
+            IRow row = summarySheet.CreateRow(rowNum++);
+            row.SetCell(0, largeHeaderName).LargeHeaderStyle().ApplyStyle();
+            row.HeightInPoints = 30;
+            var range = new CellRangeAddress(row.RowNum, row.RowNum, 0, MaxSummaryColumnUsed);
+            summarySheet.AddMergedRegion(range);
             return rowNum;
         }
 

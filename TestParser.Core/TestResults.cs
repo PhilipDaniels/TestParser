@@ -12,11 +12,33 @@ namespace TestParser.Core
     public class TestResults
     {
         List<string> outcomeNames;
-        
+
         public TestResultCollection ResultLines { get; private set; }
         public TestResultSummary SummaryByAssembly { get; private set; }
         public TestResultSummary SummaryByClass { get; private set; }
         public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
+
+        /// <summary>
+        /// Gets the 10 slowest tests.
+        /// </summary>
+        /// <value>
+        /// The 10 slowest tests.
+        /// </value>
+        public IEnumerable<SlowestTest> SlowestTests
+        {
+            get
+            {
+                return ResultLines.OrderByDescending(r => r.DurationInSeconds)
+                                  .Take(10)
+                                  .Select(r => new SlowestTest()
+                                  {
+                                      AssemblyPathName = r.AssemblyPathName,
+                                      DurationInSeconds = r.DurationInSeconds,
+                                      FullClassName = r.FullClassName,
+                                      TestName = r.TestName
+                                  });
+            }
+        }
 
         public TestResults()
         {
