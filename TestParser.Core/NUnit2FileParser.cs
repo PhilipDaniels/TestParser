@@ -52,7 +52,7 @@ namespace TestParser.Core
             }
             catch (Exception ex)
             {
-                throw;
+                throw new ParseException("Error while parsing NUnit file '" + filename + "'", ex);
             }
         }
 

@@ -72,6 +72,7 @@
     <Compile Include="ITestFileParser.cs" />
     <Compile Include="KnownOutcomes.cs" />
     <Compile Include="NUnit2FileParser.cs" />
+    <Compile Include="ParseException.cs" />
     <Compile Include="SlowestTest.cs" />
     <Compile Include="TestResultCollection.cs" />
     <Compile Include="TestResultFileType.cs" />
