@@ -7,52 +7,8 @@ namespace NPOI.SS.FluentExtensions
     /// styling options via a Fluent API, until they need to be applied
     /// to a cell.
     /// </summary>
-    public class FluentStyle
+    public partial class FluentStyle
     {
-        // Main cell style properties
-        public HorizontalAlignment? Alignment { get; set; }
-        public BorderStyle? BorderBottom { get; set; }
-        public BorderDiagonal? BorderDiagonal { get; set; }
-        public short? BorderDiagonalColor { get; set; }
-        public BorderStyle? BorderDiagonalLineStyle { get; set; }
-        public BorderStyle? BorderLeft { get; set; }
-        public BorderStyle? BorderRight { get; set; }
-        public BorderStyle? BorderTop { get; set; }
-        public short? BottomBorderColor { get; set; }
-        public short? DataFormat { get; set; }
-        public short? FillBackgroundColor { get; set; }
-        public short? FillForegroundColor { get; set; }
-        public FillPattern? FillPattern { get; set; }
-        public short? Indention { get; set; }
-        public short? LeftBorderColor { get; set; }
-        public short? RightBorderColor { get; set; }
-        public short? Rotation { get; set; }
-        public bool? ShrinkToFit { get; set; }
-        public short? TopBorderColor { get; set; }
-        public VerticalAlignment? VerticalAlignment { get; set; }
-        public bool? WrapText { get; set; }
-
-        // Font properties
-        public FontBoldWeight? FontWeight { get; set; }
-        public short? Charset { get; set; }
-        public short? Color { get; set; }
-        public double? FontHeight { get; set; }
-        public short? FontHeightInPoints { get; set; }
-        public string FontName { get; set; }
-        public bool? Italic { get; set; }
-        public bool? Strikeout { get; set; }
-        public FontSuperScript? SuperScript { get; set; }
-        public FontUnderlineType? Underline { get; set; }
-
-        /// <summary>
-        /// Gets or sets the format, e.g. "0.00%".
-        /// If used, overrides the <see cref="DataFormat"/> property when the style is applied.
-        /// </summary>
-        /// <value>
-        /// The format.
-        /// </value>
-        public string Format { get; set; }
-
         /// <summary>
         /// Applies the style by copying the fluent style to the NPOI style object,.
         /// </summary>

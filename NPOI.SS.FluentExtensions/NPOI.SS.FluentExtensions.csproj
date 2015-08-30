@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\NPOI.SS.FluentExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -59,6 +60,8 @@
     <Compile Include="FluentCell.cs" />
     <Compile Include="FluentCell.FontStyling.cs" />
     <Compile Include="FluentCell.MainStyling.cs" />
+    <Compile Include="FluentStyle.MainProperties.cs" />
+    <Compile Include="FluentStyle.FontProperties.cs" />
     <Compile Include="FluentStyle.cs" />
     <Compile Include="ICellExtensions.MainStyling.cs" />
     <Compile Include="ICellExtensions.FontStyling.cs" />
