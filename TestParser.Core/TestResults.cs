@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BassUtils;
 
@@ -145,17 +143,6 @@ namespace TestParser.Core
 
                 SummaryByAssembly.Add(summary);
             }
-
-            /*
-            // Calculate code coverage by merging NCrunch data where we have it.
-            // We can only match by assembly.
-            foreach (var row in SummaryByAssembly.SummaryLines)
-            {
-                string assemblyName = row.AssemblyPathName;
-                row.CompiledLines = CoverageData.CoverageForAssembly(assemblyName).Sum(c => c.CompiledLines);
-                row.CoveredLines = CoverageData.CoverageForAssembly(assemblyName).Sum(c => c.CoveredLines);
-            }
-            */
         }
 
         /// <summary>
