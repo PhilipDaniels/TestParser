@@ -3,7 +3,7 @@
     /// <summary>
     /// Possible file types.
     /// </summary>
-    public enum TestResultFileType
+    public enum InputFileType
     {
         /// <summary>
         /// The TRX file type, as produced by MS Test.
@@ -15,9 +15,14 @@
         /// </summary>
         NUnit2,
 
-            /// <summary>
+        /// <summary>
         /// The NUnit 3 file type, as produced by, er, NUnit 3.
         /// </summary>
-        NUnit3
+        NUnit3,
+
+        /// <summary>
+        /// Coverage data from NCrunch.
+        /// </summary>
+        NCrunchCoverage
     }
 }

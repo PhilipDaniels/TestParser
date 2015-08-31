@@ -14,6 +14,7 @@ namespace TestParser.Core
         List<string> outcomeNames;
 
         public TestResultCollection ResultLines { get; private set; }
+        public CoverageDataCollection CoverageData { get; private set; }
         public TestResultSummary SummaryByAssembly { get; private set; }
         public TestResultSummary SummaryByClass { get; private set; }
         public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
@@ -44,6 +45,7 @@ namespace TestParser.Core
         {
             ResultLines = new TestResultCollection();
             outcomeNames = new List<string>();
+            CoverageData = new CoverageDataCollection();
         }
 
         public void Add(TestResult result)
@@ -53,12 +55,27 @@ namespace TestParser.Core
             ResultLines.Add(result);
         }
 
+        public void Add(CoverageData coverageData)
+        {
+            coverageData.ThrowIfNull("coverageData");
+
+            CoverageData.Add(coverageData);
+        }
+
         public void AddRange(IEnumerable<TestResult> results)
         {
             results.ThrowIfNull("results");
 
             foreach (var result in results)
                 Add(result);
+        }
+
+        public void AddRange(IEnumerable<CoverageData> coverageData)
+        {
+            coverageData.ThrowIfNull("coverageData");
+
+            foreach (var cd in coverageData)
+                Add(cd);
         }
 
         /// <summary>

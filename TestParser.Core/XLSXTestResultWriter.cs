@@ -15,6 +15,7 @@ namespace TestParser.Core
         IWorkbook workbook;
         ISheet summarySheet;
         ISheet resultsSheet;
+        ISheet coverageSheet;
         ISheetConditionalFormatting summarySheetConditionalFormatting;
         ISheetConditionalFormatting resultsSheetConditionalFormatting;
         TestResults testResults;
@@ -40,10 +41,13 @@ namespace TestParser.Core
             workbook = new XSSFWorkbook();
             summarySheet = workbook.CreateSheet("Summary");
             resultsSheet = workbook.CreateSheet("TestResults");
+            coverageSheet = workbook.CreateSheet("CoverageData");
+
             this.testResults = testResults;
             summarySheetConditionalFormatting = summarySheet.SheetConditionalFormatting;
             resultsSheetConditionalFormatting = resultsSheet.SheetConditionalFormatting;
 
+            CreateCoverageSheet();
             CreateResultsSheet();
             CreateSummarySheet();
 
@@ -51,6 +55,56 @@ namespace TestParser.Core
 
             // Handy check to see if caching is working.
             int numStylesCreated = FluentCell.NumCachedStyles;
+        }
+
+        void CreateCoverageSheet()
+        {
+            const int ColProjectFileName = 0;
+            const int ColSourceFileName = 1;
+            const int ColCoverage = 2;
+            const int ColCompiledLines = 3;
+            const int ColCoveredLines = 4;
+            const int ColUncoveredLines = 5;
+            const int ColProjectPathName = 6;
+            const int ColSourcePathName = 7;
+
+            IRow row = coverageSheet.CreateRow(0);
+            row.SetCell(ColProjectFileName, "ProjectFileName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColSourceFileName, "SourceFileName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColCoverage, "Coverage").HeaderStyle().ApplyStyle();
+            row.SetCell(ColCompiledLines, "CompiledLines").HeaderStyle().ApplyStyle();
+            row.SetCell(ColCoveredLines, "CoveredLines").HeaderStyle().ApplyStyle();
+            row.SetCell(ColUncoveredLines, "UncoveredLines").HeaderStyle().ApplyStyle();
+            row.SetCell(ColProjectPathName, "ProjectPathName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColSourcePathName, "SourcePathName").HeaderStyle().ApplyStyle();
+
+            int i = 1;
+            foreach (var r in testResults.CoverageData)
+            {
+                row = coverageSheet.CreateRow(i);
+                row.SetCell(ColProjectFileName, r.ProjectFileName);
+                row.SetCell(ColSourceFileName, r.SourceFileName);
+                row.SetCell(ColCoverage, r.Coverage).FormatPercentage().ApplyStyle();
+                row.SetCell(ColCompiledLines, r.CompiledLines);
+                row.SetCell(ColCoveredLines, r.CoveredLines);
+                row.SetCell(ColUncoveredLines, r.UncoveredLines);
+                row.SetCell(ColProjectPathName, r.ProjectPathName);
+                row.SetCell(ColSourcePathName, r.SourceFilePathName);
+
+                i++;
+            }
+
+            // Freeze the header row.
+            coverageSheet.CreateFreezePane(0, 1, 0, 1);
+
+            coverageSheet.SetColumnWidth(ColProjectFileName, 10000);
+            coverageSheet.SetColumnWidth(ColSourceFileName, 10000);
+            coverageSheet.SetColumnWidth(ColCoverage, 3000);
+            coverageSheet.SetColumnWidth(ColCompiledLines, 3000);
+            coverageSheet.SetColumnWidth(ColCoveredLines, 3000);
+            coverageSheet.SetColumnWidth(ColUncoveredLines, 3000);
+            coverageSheet.SetColumnWidth(ColProjectPathName, 10000);
+            coverageSheet.SetColumnWidth(ColSourcePathName, 10000);
         }
 
         void CreateResultsSheet()
@@ -73,21 +127,21 @@ namespace TestParser.Core
             const int ColTestResultFileType = 15;
 
             IRow row = resultsSheet.CreateRow(0);
-            row.SetCell(ColResultsPathName, "ResultsPathName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColResultsFileName, "ResultsFileName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColAssemblyPathName, "AssemblyPathName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColAssemblyFileName, "AssemblyFileName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColFullClassName, "FullClassName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColClassName, "ClassName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColTestName, "TestName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColComputerName, "ComputerName").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColStartTime, "StartTime").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColEndTime, "EndTime").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColDurationInSeconds, "DurationInSeconds").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColDurationInSecondsHuman, "DurationInSecondsHuman").HeaderStyle().Alignment(HorizontalAlignment.Right).ApplyStyle(); ;
-            row.SetCell(ColOutcome, "Outcome").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColErrorMessage, "ErrorMessage").HeaderStyle().ApplyStyle(); ;
-            row.SetCell(ColStackTrace, "StackTrace").HeaderStyle().ApplyStyle(); ;
+            row.SetCell(ColResultsPathName, "ResultsPathName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColResultsFileName, "ResultsFileName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColAssemblyPathName, "AssemblyPathName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColAssemblyFileName, "AssemblyFileName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColFullClassName, "FullClassName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColClassName, "ClassName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColTestName, "TestName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColComputerName, "ComputerName").HeaderStyle().ApplyStyle();
+            row.SetCell(ColStartTime, "StartTime").HeaderStyle().ApplyStyle();
+            row.SetCell(ColEndTime, "EndTime").HeaderStyle().ApplyStyle();
+            row.SetCell(ColDurationInSeconds, "DurationInSeconds").HeaderStyle().ApplyStyle();
+            row.SetCell(ColDurationInSecondsHuman, "DurationInSecondsHuman").HeaderStyle().Alignment(HorizontalAlignment.Right).ApplyStyle();
+            row.SetCell(ColOutcome, "Outcome").HeaderStyle().ApplyStyle();
+            row.SetCell(ColErrorMessage, "ErrorMessage").HeaderStyle().ApplyStyle();
+            row.SetCell(ColStackTrace, "StackTrace").HeaderStyle().ApplyStyle();
             row.SetCell(ColTestResultFileType, "TestResultFileType").HeaderStyle().ApplyStyle();
 
             int i = 1;

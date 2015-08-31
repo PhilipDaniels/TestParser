@@ -68,15 +68,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineArguments.cs" />
+    <Compile Include="CoverageData.cs" />
     <Compile Include="HumanTime.cs" />
     <Compile Include="ITestFileParser.cs" />
     <Compile Include="KnownOutcomes.cs" />
+    <Compile Include="NCrunchCoverageParser.cs" />
     <Compile Include="NUnit2FileParser.cs" />
     <Compile Include="ParseException.cs" />
     <Compile Include="SlowestTest.cs" />
+    <Compile Include="CoverageDataCollection.cs" />
     <Compile Include="TestResultCollection.cs" />
-    <Compile Include="TestResultFileType.cs" />
-    <Compile Include="TestResultFileTypeGuesser.cs" />
+    <Compile Include="InputFileType.cs" />
+    <Compile Include="InputFileTypeGuesser.cs" />
     <Compile Include="TestResultOutputter.cs" />
     <Compile Include="Quoter.cs" />
     <Compile Include="ResultOutcomeSummary.cs" />

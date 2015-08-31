@@ -11,6 +11,7 @@ namespace TestParser.Core
     {
         readonly TrxFileParser trxFileParser;
         readonly NUnit2FileParser nunit2FileParser;
+        readonly NCrunchCoverageParser nCrunchCoverageParser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestResultFactory"/> class.
@@ -19,6 +20,7 @@ namespace TestParser.Core
         {
             trxFileParser = new TrxFileParser();
             nunit2FileParser = new NUnit2FileParser();
+            nCrunchCoverageParser = new NCrunchCoverageParser();
         }
 
         /// <summary>
@@ -33,15 +35,18 @@ namespace TestParser.Core
 
             foreach (string file in testFileNames)
             {
-                var fileType = TestResultFileTypeGuesser.GuessFileType(file);
+                var fileType = InputFileTypeGuesser.GuessFileType(file);
 
                 switch (fileType)
                 {
-                    case TestResultFileType.Trx:
+                    case InputFileType.Trx:
                         results.AddRange(trxFileParser.Parse(file));
                         break;
-                    case TestResultFileType.NUnit2:
+                    case InputFileType.NUnit2:
                         results.AddRange(nunit2FileParser.Parse(file));
+                        break;
+                    case InputFileType.NCrunchCoverage:
+                        results.AddRange(nCrunchCoverageParser.Parse(file));
                         break;
                     default:
                         throw new Exception("Unhandled fileType " + fileType);

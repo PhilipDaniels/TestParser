@@ -32,7 +32,7 @@ namespace TestParser.Core
                                let times = tc.Attributes("time")
                                select new TestResult()
                                {
-                                   TestResultFileType = TestResultFileType.NUnit2,
+                                   TestResultFileType = InputFileType.NUnit2,
                                    ResultsPathName = filename,
                                    AssemblyPathName = tr.Attribute("name").Value,
                                    ComputerName = tr.Element("environment").Attribute("machine-name").Value,

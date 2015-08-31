@@ -45,7 +45,7 @@ namespace TestParser.Core
                                let et = DateTime.Parse(utr.Attribute("endTime").Value).ToUniversalTime()
                                select new TestResult()
                                {
-                                   TestResultFileType = Core.TestResultFileType.Trx,
+                                   TestResultFileType = Core.InputFileType.Trx,
                                    ResultsPathName = filename,
                                    AssemblyPathName = (from td in testDefinitions where td.executionId == executionId select td.codeBase).Single(),
                                    FullClassName = (from td in testDefinitions where td.executionId == executionId select td.className).Single(),

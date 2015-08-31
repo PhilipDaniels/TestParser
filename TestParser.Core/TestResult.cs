@@ -17,7 +17,7 @@ namespace TestParser.Core
         /// <value>
         /// The type of the test result file.
         /// </value>
-        public TestResultFileType TestResultFileType { get; set; }
+        public InputFileType TestResultFileType { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the results path.
