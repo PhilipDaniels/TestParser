@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using NPOI.HSSF.Util;
-using NPOI.SS.FluentExtensions;
 using NPOI.SS.UserModel;
-using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 
 namespace TestParser.Core
@@ -28,9 +23,13 @@ namespace TestParser.Core
             workbook = new XSSFWorkbook();
             this.testResults = testResults;
 
-            CreateSummarySheet(workbook.CreateSheet("Summary"));
+            CreateResultsSummarySheet(workbook.CreateSheet("TestResults - Summary"));
             CreateResultsSheet(workbook.CreateSheet("TestResults"));
-            CreateCoverageSheet(workbook.CreateSheet("CoverageData"));
+            if (testResults.CoverageData.Count() > 0)
+            {
+                CreateCoverageSummarySheet(workbook.CreateSheet("CoverageResults - Summary"));
+                CreateCoverageSheet(workbook.CreateSheet("CoverageResults"));
+            }
 
             workbook.Write(s);
         }

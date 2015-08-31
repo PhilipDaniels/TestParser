@@ -16,10 +16,11 @@ namespace TestParser.Core
         List<string> outcomeNames;
 
         public TestResultCollection ResultLines { get; private set; }
-        public CoverageDataCollection CoverageData { get; private set; }
         public TestResultSummary SummaryByAssembly { get; private set; }
         public TestResultSummary SummaryByClass { get; private set; }
         public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
+
+        public CoverageDataCollection CoverageData { get; private set; }
 
         /// <summary>
         /// Gets the 20 slowest tests.
@@ -145,6 +146,7 @@ namespace TestParser.Core
                 SummaryByAssembly.Add(summary);
             }
 
+            /*
             // Calculate code coverage by merging NCrunch data where we have it.
             // We can only match by assembly.
             foreach (var row in SummaryByAssembly.SummaryLines)
@@ -153,6 +155,7 @@ namespace TestParser.Core
                 row.CompiledLines = CoverageData.CoverageForAssembly(assemblyName).Sum(c => c.CompiledLines);
                 row.CoveredLines = CoverageData.CoverageForAssembly(assemblyName).Sum(c => c.CoveredLines);
             }
+            */
         }
 
         /// <summary>

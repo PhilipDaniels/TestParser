@@ -114,6 +114,7 @@ namespace TestParser.Core
             }
         }
 
+        /*
         /// <summary>
         /// Gets or sets the number of compiled lines.
         /// </summary>
@@ -160,5 +161,6 @@ namespace TestParser.Core
                     return (double)CoveredLines / (double)CompiledLines;
             }
         }
+        */
     }
 }

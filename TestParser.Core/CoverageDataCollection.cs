@@ -59,23 +59,20 @@ namespace TestParser.Core
             results.Add(coverageData);
         }
 
-
-        public IEnumerable<CoverageData> CoverageForAssembly(string assemblyName)
+        public IEnumerable<CoverageData> SummariseByProject
         {
-            string[] extensions = new string[] { "csproj", "vbproj" };
-            // Coverage.ProjectPathName    = C:\Users\Phil\repos\BassUtils\BassUtils\BassUtils.Tests\BassUtils.Tests.csproj
-            // TestResult.AssemblyFileName = C:\Users\Phil\repos\BassUtils\BassUtils\BassUtils.Tests\bin\Debug\BassUtils.Tests.dll
-            string an = Path.GetFileName(assemblyName);
-
-            foreach (string ext in extensions)
+            get
             {
-                an = Path.ChangeExtension(an, ext);
-                var cd = this.Where(c => c.ProjectFileName.Equals(an, StringComparison.OrdinalIgnoreCase));
-                if (cd.Count() > 0)
-                    return cd;
+                return from cd in this
+                       group cd by cd.ProjectPathName into newGroup
+                       orderby newGroup.Key
+                       select new CoverageData()
+                       {
+                           ProjectPathName = newGroup.Key,
+                           CompiledLines = newGroup.Sum(g => g.CompiledLines),
+                           CoveredLines = newGroup.Sum(g => g.CoveredLines)
+                       };
             }
-
-            return Enumerable.Empty<CoverageData>();
         }
     }
 }

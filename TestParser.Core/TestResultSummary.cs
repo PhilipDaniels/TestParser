@@ -107,6 +107,7 @@ namespace TestParser.Core
             }
         }
 
+        /*
         /// <summary>
         /// Gets the coverage percentage, expressed as a number 0..1.
         /// </summary>
@@ -165,5 +166,6 @@ namespace TestParser.Core
                 return CompiledLines - CoveredLines;
             }
         }
+        */
     }
 }

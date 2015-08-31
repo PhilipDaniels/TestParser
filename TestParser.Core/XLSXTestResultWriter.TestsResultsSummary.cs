@@ -17,15 +17,14 @@ namespace TestParser.Core
         const int SumColClass = 1;
         const int SumColTime = 2;
         const int SumColTimeHuman = 3;
-        const int SumColCoverage = 4;
-        const int SumColPercent = 5;
-        const int SumColTotal = 6;
-        const int SumColPassed = 7;
+        const int SumColPercent = 4;
+        const int SumColTotal = 5;
+        const int SumColPassed = 6;
 
         ISheet summarySheet;
         IConditionalFormattingRule[] summaryPercentageFormattingRules;
 
-        void CreateSummarySheet(ISheet sheet)
+        void CreateResultsSummarySheet(ISheet sheet)
         {
             this.summarySheet = sheet;
             summaryPercentageFormattingRules = MakePercentageConditionalFormattingRules(summarySheet);
@@ -41,7 +40,6 @@ namespace TestParser.Core
             summarySheet.SetColumnWidth(SumColClass, 12000);
             summarySheet.SetColumnWidth(SumColTime, 4000);
             summarySheet.SetColumnWidth(SumColTimeHuman, 4000);
-            summarySheet.SetColumnWidth(SumColCoverage, 2500);
             summarySheet.SetColumnWidth(SumColPercent, 2500);
             for (int colNum = SumColTotal; colNum <= MaxSummaryColumnUsed; colNum++)
             {
@@ -61,7 +59,6 @@ namespace TestParser.Core
             row.SetCell(SumColClass, "Class").HeaderStyle().ApplyStyle();
             row.SetCell(SumColTime, "Time (secs)").HeaderStyle().ApplyStyle();
             row.SetCell(SumColTimeHuman, "Time (hh:mm:ss)").HeaderStyle().ApplyStyle();
-            row.SetCell(SumColCoverage, "Coverage").HeaderStyle().ApplyStyle();
             row.SetCell(SumColPercent, "Pass Rate").HeaderStyle().ApplyStyle();
             row.SetCell(SumColTotal, "Total").HeaderStyle().ApplyStyle();
             colNum = SumColPassed;
@@ -77,8 +74,6 @@ namespace TestParser.Core
                 row.SetCell(SumColClass, s.ClassName);
                 row.SetCell(SumColTime, s.TotalDurationInSeconds).Format("0.00").ApplyStyle();
                 row.SetCell(SumColTimeHuman, s.TotalDurationInSecondsHuman).Alignment(HorizontalAlignment.Right).ApplyStyle();
-                if (largeHeaderName == ByTestAssembly)
-                    row.SetCell(SumColCoverage, s.Coverage).FormatPercentage().ApplyStyle();
                 row.SetCell(SumColPercent, s.PercentPassed).FormatPercentage().ApplyStyle();
                 row.SetCell(SumColTotal, s.TotalTests);
 
@@ -96,10 +91,6 @@ namespace TestParser.Core
             row = summarySheet.CreateRow(rowNum++);
             row.SetCell(SumColTime, summary.TotalDurationInSeconds).SummaryStyle().Format("0.00").ApplyStyle();
             row.SetCell(SumColTimeHuman, summary.TotalDurationInSecondsHuman).SummaryStyle().Alignment(HorizontalAlignment.Right).ApplyStyle();
-            if (largeHeaderName == ByTestAssembly)
-                row.SetCell(SumColCoverage, summary.Coverage).SummaryStyle().FormatPercentage().ApplyStyle();
-            else
-                row.SetCell(SumColCoverage, "").SummaryStyle().ApplyStyle();
             row.SetCell(SumColPercent, summary.PercentPassed).SummaryStyle().FormatPercentage().ApplyStyle();
             row.SetCell(SumColTotal, summary.TotalTests).SummaryStyle().ApplyStyle();
 
@@ -109,8 +100,6 @@ namespace TestParser.Core
                 row.SetCell(cn++, summary.TotalByOutcome(oc)).SummaryStyle().ApplyStyle();
             }
 
-            if (largeHeaderName == ByTestAssembly)
-                ApplySummaryCoverageFormatting(topOfSums, rowNum - 1);
             ApplySummaryPercentageFormatting(topOfSums, rowNum - 1);
             ApplySummaryFailsFormatting(topOfSums, rowNum - 1);
 
@@ -149,8 +138,8 @@ namespace TestParser.Core
             row.SetCell(SumColClass, "Class").HeaderStyle().ApplyStyle();
             row.SetCell(SumColTime, "Time (secs)").HeaderStyle().ApplyStyle();
             row.SetCell(SumColTimeHuman, "Time (hh:mm:ss)").HeaderStyle().ApplyStyle();
-            row.SetCell(SumColCoverage, "Test Name").HeaderStyle().ApplyStyle();
-            var range = new CellRangeAddress(row.RowNum, row.RowNum, SumColCoverage, MaxSummaryColumnUsed);
+            row.SetCell(SumColPercent, "Test Name").HeaderStyle().ApplyStyle();
+            var range = new CellRangeAddress(row.RowNum, row.RowNum, SumColPercent, MaxSummaryColumnUsed);
             summarySheet.AddMergedRegion(range);
 
             foreach (var t in slowestTests)
@@ -160,22 +149,15 @@ namespace TestParser.Core
                 row.SetCell(SumColClass, t.ClassName);
                 row.SetCell(SumColTime, t.DurationInSeconds).Format("0.00").ApplyStyle();
                 row.SetCell(SumColTimeHuman, t.DurationHuman).Alignment(HorizontalAlignment.Right).ApplyStyle();
-                row.SetCell(SumColCoverage, t.TestName);
-                range = new CellRangeAddress(row.RowNum, row.RowNum, SumColCoverage, MaxSummaryColumnUsed);
+                row.SetCell(SumColPercent, t.TestName);
+                range = new CellRangeAddress(row.RowNum, row.RowNum, SumColPercent, MaxSummaryColumnUsed);
                 summarySheet.AddMergedRegion(range);
             }
         }
 
-        void ApplySummaryCoverageFormatting(int rowFromInclusive, int rowtoInclusive)
-        {
-            string range = String.Format("E{0}:E{1}", rowFromInclusive, rowtoInclusive);
-            var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
-            summarySheet.SheetConditionalFormatting.AddConditionalFormatting(region, summaryPercentageFormattingRules);
-        }
-
         void ApplySummaryPercentageFormatting(int rowFromInclusive, int rowtoInclusive)
         {
-            string range = String.Format("F{0}:F{1}", rowFromInclusive, rowtoInclusive);
+            string range = String.Format("E{0}:E{1}", rowFromInclusive, rowtoInclusive);
             var region = new CellRangeAddress[] { CellRangeAddress.ValueOf(range) };
             summarySheet.SheetConditionalFormatting.AddConditionalFormatting(region, summaryPercentageFormattingRules);
         }
