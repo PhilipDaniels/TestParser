@@ -106,5 +106,64 @@ namespace TestParser.Core
                 return HumanTime.ToHumanString(TotalDurationInSeconds);
             }
         }
+
+        /// <summary>
+        /// Gets the coverage percentage, expressed as a number 0..1.
+        /// </summary>
+        /// <value>
+        /// The coverage percentage.
+        /// </value>
+        public double Coverage
+        {
+            get
+            {
+                if (CompiledLines == 0)
+                    return 0;
+                else
+                    return (double)CoveredLines / (double)CompiledLines;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of compiled lines.
+        /// </summary>
+        /// <value>
+        /// The number of compiled lines.
+        /// </value>
+        public int CompiledLines
+        {
+            get
+            {
+                return SummaryLines.Sum(c => c.CompiledLines);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of covered lines.
+        /// </summary>
+        /// <value>
+        /// The number of covered lines.
+        /// </value>
+        public int CoveredLines
+        {
+            get
+            {
+                return SummaryLines.Sum(c => c.CoveredLines);
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of uncovered lines.
+        /// </summary>
+        /// <value>
+        /// The number of uncovered lines.
+        /// </value>
+        public int UncoveredLines
+        {
+            get
+            {
+                return CompiledLines - CoveredLines;
+            }
+        }
     }
 }

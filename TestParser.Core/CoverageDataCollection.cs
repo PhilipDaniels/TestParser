@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BassUtils;
 
@@ -55,6 +57,25 @@ namespace TestParser.Core
             coverageData.ThrowIfNull("coverageData");
 
             results.Add(coverageData);
+        }
+
+
+        public IEnumerable<CoverageData> CoverageForAssembly(string assemblyName)
+        {
+            string[] extensions = new string[] { "csproj", "vbproj" };
+            // Coverage.ProjectPathName    = C:\Users\Phil\repos\BassUtils\BassUtils\BassUtils.Tests\BassUtils.Tests.csproj
+            // TestResult.AssemblyFileName = C:\Users\Phil\repos\BassUtils\BassUtils\BassUtils.Tests\bin\Debug\BassUtils.Tests.dll
+            string an = Path.GetFileName(assemblyName);
+
+            foreach (string ext in extensions)
+            {
+                an = Path.ChangeExtension(an, ext);
+                var cd = this.Where(c => c.ProjectFileName.Equals(an, StringComparison.OrdinalIgnoreCase));
+                if (cd.Count() > 0)
+                    return cd;
+            }
+
+            return Enumerable.Empty<CoverageData>();
         }
     }
 }
