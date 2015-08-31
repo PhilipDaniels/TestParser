@@ -88,6 +88,8 @@
     <Compile Include="TestResults.cs" />
     <Compile Include="TestResultSummary.cs" />
     <Compile Include="TestResultSummaryLine.cs" />
+    <Compile Include="XLSXTestResultWriter.TestResults.cs" />
+    <Compile Include="XLSXTestResultWriter.Summary.cs" />
     <Compile Include="XLSXTestResultWriter.cs" />
     <Compile Include="KVPTestResultWriter.cs" />
     <Compile Include="JSONTestResultWriter.cs" />
@@ -107,6 +109,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <Compile Include="XLSXTestResultWriter.Coverage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NPOI.SS.FluentExtensions\NPOI.SS.FluentExtensions.csproj">

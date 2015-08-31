@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BassUtils;
 
 namespace TestParser.Core
@@ -10,6 +11,34 @@ namespace TestParser.Core
     public class CoverageDataCollection : IEnumerable<CoverageData>
     {
         readonly List<CoverageData> results = new List<CoverageData>();
+
+        /// <summary>
+        /// Sort the results so that they are ordered by name.
+        /// </summary>
+        /// <returns>Ordered coverage data.</returns>
+        public IEnumerable<CoverageData> SortedByName
+        {
+            get
+            {
+                return from r in results
+                       orderby r.ProjectPathName, r.SourceFilePathName
+                       select r;
+            }
+        }
+
+        /// <summary>
+        /// Sort the results so that they are ordered by project name then coverage (worse is earlier).
+        /// </summary>
+        /// <returns>Ordered coverage data.</returns>
+        public IEnumerable<CoverageData> SortedByCoverage
+        {
+            get
+            {
+                return from r in results
+                       orderby r.ProjectPathName, r.Coverage
+                       select r;
+            }
+        }
 
         public IEnumerator<CoverageData> GetEnumerator()
         {

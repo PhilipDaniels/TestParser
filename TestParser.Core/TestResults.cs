@@ -20,17 +20,17 @@ namespace TestParser.Core
         public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
 
         /// <summary>
-        /// Gets the 10 slowest tests.
+        /// Gets the 20 slowest tests.
         /// </summary>
         /// <value>
-        /// The 10 slowest tests.
+        /// The 20 slowest tests.
         /// </value>
         public IEnumerable<SlowestTest> SlowestTests
         {
             get
             {
                 return ResultLines.OrderByDescending(r => r.DurationInSeconds)
-                                  .Take(10)
+                                  .Take(20)
                                   .Select(r => new SlowestTest()
                                   {
                                       AssemblyPathName = r.AssemblyPathName,
