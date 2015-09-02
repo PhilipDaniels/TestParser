@@ -19,7 +19,7 @@ namespace TestParser
                 var resultsFactory = new TestResultFactory();
                 var results = resultsFactory.CreateResultsFromTestFiles(cla.TestFiles);
 
-                var outputCreator = new TestResultOutputter();
+                var outputCreator = new ParsedDataOutputter();
                 outputCreator.OutputResults(results, cla);
             }
             catch (Exception ex)

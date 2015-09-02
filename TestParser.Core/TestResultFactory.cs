@@ -29,9 +29,9 @@ namespace TestParser.Core
         /// <param name="testFileNames">The test file names.</param>
         /// <returns></returns>
         /// <exception cref="System.Exception">Unhandled fileType  + fileType</exception>
-        public TestResults CreateResultsFromTestFiles(IEnumerable<string> testFileNames)
+        public ParsedData CreateResultsFromTestFiles(IEnumerable<string> testFileNames)
         {
-            var results = new TestResults();
+            var results = new ParsedData();
 
             foreach (string file in testFileNames)
             {

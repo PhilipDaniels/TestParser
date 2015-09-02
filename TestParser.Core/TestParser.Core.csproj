@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineArguments.cs" />
-    <Compile Include="CoverageData.cs" />
+    <Compile Include="NCrunchCoverageData.cs" />
     <Compile Include="HumanTime.cs" />
     <Compile Include="ITestFileParser.cs" />
     <Compile Include="KnownOutcomes.cs" />
@@ -76,16 +76,16 @@
     <Compile Include="NUnit2FileParser.cs" />
     <Compile Include="ParseException.cs" />
     <Compile Include="SlowestTest.cs" />
-    <Compile Include="CoverageDataCollection.cs" />
+    <Compile Include="NCrunchCoverageDataCollection.cs" />
     <Compile Include="TestResultCollection.cs" />
     <Compile Include="InputFileType.cs" />
     <Compile Include="InputFileTypeGuesser.cs" />
-    <Compile Include="TestResultOutputter.cs" />
+    <Compile Include="ParsedDataOutputter.cs" />
     <Compile Include="Quoter.cs" />
     <Compile Include="ResultOutcomeSummary.cs" />
     <Compile Include="TestResultBase.cs" />
     <Compile Include="TestResultFactory.cs" />
-    <Compile Include="TestResults.cs" />
+    <Compile Include="ParsedData.cs" />
     <Compile Include="TestResultSummary.cs" />
     <Compile Include="TestResultSummaryLine.cs" />
     <Compile Include="XLSXTestResultWriter.CoverageSummary.cs" />
@@ -100,7 +100,7 @@
     <Compile Include="OutputFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestResult.cs" />
-    <Compile Include="TestFileFinder.cs" />
+    <Compile Include="FileFinder.cs" />
     <Compile Include="TrxFileParser.cs" />
     <Compile Include="ApplicationExcelStyling.cs" />
     <Compile Include="XsdValidator.cs" />

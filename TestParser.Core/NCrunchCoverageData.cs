@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
 namespace TestParser.Core
 {
     [DebuggerDisplay("{SourceFileName}, Coverage={Coverage}")]
-    public class CoverageData
+    public class NCrunchCoverageData
     {
         /// <summary>
         /// Gets or sets the name of the project path.

@@ -8,7 +8,7 @@ namespace TestParser.Core
     public partial class XLSXTestResultWriter : ITestResultWriter
     {
         IWorkbook workbook;
-        TestResults testResults;
+        ParsedData testResults;
         readonly string yellowBandString;
         readonly string greenBandString;
 
@@ -18,7 +18,7 @@ namespace TestParser.Core
             greenBandString = (((decimal)greenBand) / 100m).ToString();
         }
 
-        public void WriteResults(Stream s, TestResults testResults)
+        public void WriteResults(Stream s, ParsedData testResults)
         {
             workbook = new XSSFWorkbook();
             this.testResults = testResults;

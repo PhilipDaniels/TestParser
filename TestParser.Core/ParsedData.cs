@@ -9,7 +9,7 @@ namespace TestParser.Core
     /// The summaries are mainly for convenience, equivalent or similar
     /// summaries can be created by Linq queries over the <see cref="ResultLines"/>.
     /// </summary>
-    public class TestResults
+    public class ParsedData
     {
         List<string> outcomeNames;
 
@@ -18,7 +18,7 @@ namespace TestParser.Core
         public TestResultSummary SummaryByClass { get; private set; }
         public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
 
-        public CoverageDataCollection CoverageData { get; private set; }
+        public NCrunchCoverageDataCollection CoverageData { get; private set; }
 
         /// <summary>
         /// Gets the 20 slowest tests.
@@ -42,11 +42,11 @@ namespace TestParser.Core
             }
         }
 
-        public TestResults()
+        public ParsedData()
         {
             ResultLines = new TestResultCollection();
             outcomeNames = new List<string>();
-            CoverageData = new CoverageDataCollection();
+            CoverageData = new NCrunchCoverageDataCollection();
         }
 
         public void Add(TestResult result)
@@ -56,7 +56,7 @@ namespace TestParser.Core
             ResultLines.Add(result);
         }
 
-        public void Add(CoverageData coverageData)
+        public void Add(NCrunchCoverageData coverageData)
         {
             coverageData.ThrowIfNull("coverageData");
 
@@ -71,7 +71,7 @@ namespace TestParser.Core
                 Add(result);
         }
 
-        public void AddRange(IEnumerable<CoverageData> coverageData)
+        public void AddRange(IEnumerable<NCrunchCoverageData> coverageData)
         {
             coverageData.ThrowIfNull("coverageData");
 

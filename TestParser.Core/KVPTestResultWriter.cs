@@ -6,7 +6,7 @@ namespace TestParser.Core
 {
     public class KVPTestResultWriter : ITestResultWriter
     {
-        public void WriteResults(Stream s, TestResults testResults)
+        public void WriteResults(Stream s, ParsedData testResults)
         {
             var utf8WithoutBom = new UTF8Encoding(false);
 

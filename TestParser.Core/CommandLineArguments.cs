@@ -150,7 +150,7 @@ namespace TestParser.Core
             }
 
             // Generate globbed list of test files to act as input.
-            var finder = new TestFileFinder();
+            var finder = new FileFinder();
             TestFiles = finder.FindFiles(fileGlobArguments).ToList();
 
             if (TestFiles.Count == 0)

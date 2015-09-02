@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BassUtils;
 
 namespace TestParser.Core
 {
     /// <summary>
-    /// Holds a set of <see cref="CoverageData"/> objects and provides
+    /// Holds a set of <see cref="NCrunchCoverageData"/> objects and provides
     /// some convenient sort methods.
     /// </summary>
-    public class CoverageDataCollection : IEnumerable<CoverageData>
+    public class NCrunchCoverageDataCollection : IEnumerable<NCrunchCoverageData>
     {
-        readonly List<CoverageData> results = new List<CoverageData>();
+        readonly List<NCrunchCoverageData> results = new List<NCrunchCoverageData>();
 
         /// <summary>
         /// Sort the results so that they are ordered by name.
         /// </summary>
         /// <returns>Ordered coverage data.</returns>
-        public IEnumerable<CoverageData> SortedByName
+        public IEnumerable<NCrunchCoverageData> SortedByName
         {
             get
             {
@@ -32,7 +30,7 @@ namespace TestParser.Core
         /// Sort the results so that they are ordered by project name then coverage (worse is earlier).
         /// </summary>
         /// <returns>Ordered coverage data.</returns>
-        public IEnumerable<CoverageData> SortedByCoverage
+        public IEnumerable<NCrunchCoverageData> SortedByCoverage
         {
             get
             {
@@ -42,7 +40,7 @@ namespace TestParser.Core
             }
         }
 
-        public IEnumerator<CoverageData> GetEnumerator()
+        public IEnumerator<NCrunchCoverageData> GetEnumerator()
         {
             return results.GetEnumerator();
         }
@@ -52,21 +50,21 @@ namespace TestParser.Core
             return results.GetEnumerator();
         }
 
-        public void Add(CoverageData coverageData)
+        public void Add(NCrunchCoverageData coverageData)
         {
             coverageData.ThrowIfNull("coverageData");
 
             results.Add(coverageData);
         }
 
-        public IEnumerable<CoverageData> SummariseByProject
+        public IEnumerable<NCrunchCoverageData> SummariseByProject
         {
             get
             {
                 return from cd in this
                        group cd by cd.ProjectPathName into newGroup
                        orderby newGroup.Key
-                       select new CoverageData()
+                       select new NCrunchCoverageData()
                        {
                            ProjectPathName = newGroup.Key,
                            CompiledLines = newGroup.Sum(g => g.CompiledLines),

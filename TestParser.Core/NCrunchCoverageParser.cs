@@ -8,7 +8,7 @@ namespace TestParser.Core
 {
     public class NCrunchCoverageParser
     {
-        public IEnumerable<CoverageData> Parse(string filename)
+        public IEnumerable<NCrunchCoverageData> Parse(string filename)
         {
             filename.ThrowIfFileDoesNotExist("filename");
 
@@ -21,7 +21,7 @@ namespace TestParser.Core
                                 from src in proj.Descendants("sourceFile")
                                 let srcPath = src.Attribute("path").Value
                                 //from line in src.Descendants("line")
-                                select new CoverageData()
+                                select new NCrunchCoverageData()
                                 {
                                     ProjectPathName = projPath,
                                     SourceFilePathName = srcPath,

@@ -6,7 +6,7 @@ namespace TestParser.Core
     /// <summary>
     /// Simple wrapper class to generate the appropriate type of result stream.
     /// </summary>
-    public class TestResultOutputter
+    public class ParsedDataOutputter
     {
         /// <summary>
         /// Outputs the results to an appropriate file or stdout.
@@ -14,7 +14,7 @@ namespace TestParser.Core
         /// <param name="results">The test results.</param>
         /// <param name="cla">The command line arguments.</param>
         /// <exception cref="Exception">Output format must be specified.</exception>
-        public void OutputResults(TestResults results, CommandLineArguments cla)
+        public void OutputResults(ParsedData results, CommandLineArguments cla)
         {
             using (Stream s = cla.OutputFilename == null ? Console.OpenStandardOutput() : new FileStream(cla.OutputFilename, FileMode.Create))
             {

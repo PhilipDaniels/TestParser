@@ -6,11 +6,11 @@ using System.Linq;
 namespace TestParser.Core
 {
     /// <summary>
-    /// Finds the unique set of test files matching a set of glob patterns.
+    /// Finds the unique set of files matching a set of glob patterns.
     /// For relative paths, the globbing is done relative to the current working directory.
     /// The returned set may be empty.
     /// </summary>
-    public class TestFileFinder
+    public class FileFinder
     {
         /// <summary>
         /// Find the unique set of files that match the set of <paramref name="globPatterns."/>
