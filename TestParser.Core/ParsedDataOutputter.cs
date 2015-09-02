@@ -31,7 +31,7 @@ namespace TestParser.Core
                         writer = new KVPTestResultWriter();
                         break;
                     case OutputFormat.Xlsx:
-                        writer = new XLSXTestResultWriter(cla.YellowBand, cla.GreenBand);
+                        writer = new XLSXWriter(cla.YellowBand, cla.GreenBand);
                         break;
                     default:
                         throw new Exception("Unsupported output format: " + cla.OutputFormat);

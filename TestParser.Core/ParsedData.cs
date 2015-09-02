@@ -18,7 +18,7 @@ namespace TestParser.Core
         public TestResultSummary SummaryByClass { get; private set; }
         public IEnumerable<string> OutcomeNames { get { return outcomeNames; } }
 
-        public NCrunchCoverageDataCollection CoverageData { get; private set; }
+        public NCrunchCoverageDataCollection NCrunchCoverageData { get; private set; }
 
         /// <summary>
         /// Gets the 20 slowest tests.
@@ -46,7 +46,7 @@ namespace TestParser.Core
         {
             ResultLines = new TestResultCollection();
             outcomeNames = new List<string>();
-            CoverageData = new NCrunchCoverageDataCollection();
+            NCrunchCoverageData = new NCrunchCoverageDataCollection();
         }
 
         public void Add(TestResult result)
@@ -60,7 +60,7 @@ namespace TestParser.Core
         {
             coverageData.ThrowIfNull("coverageData");
 
-            CoverageData.Add(coverageData);
+            NCrunchCoverageData.Add(coverageData);
         }
 
         public void AddRange(IEnumerable<TestResult> results)

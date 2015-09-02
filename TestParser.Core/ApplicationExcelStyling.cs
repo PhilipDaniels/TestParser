@@ -55,5 +55,31 @@ namespace TestParser.Core
         {
             return styledCell.Format("0.00%");
         }
+
+        public static IRow CreateHeadings(this IRow row, int startColumn, params string[] headings)
+        {
+            foreach (string heading in headings)
+            {
+                row.SetCell(startColumn++, heading).HeaderStyle().ApplyStyle();
+            }
+
+            return row;
+        }
+
+        public static ISheet SetColumnWidths(this ISheet sheet, int startColumn, params int[] widths)
+        {
+            foreach (int width in widths)
+            {
+                sheet.SetColumnWidth(startColumn++, width);
+            }
+
+            return sheet;
+        }
+
+        public static ISheet FreezeTopRow(this ISheet sheet)
+        {
+            sheet.CreateFreezePane(0, 1, 0, 1);
+            return sheet;
+        }
     }
 }
